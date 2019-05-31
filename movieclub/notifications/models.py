@@ -56,6 +56,7 @@ class Notification(models.Model):
                                              blank=True, null=True, related_name='subject')
     subject_object_id = models.CharField(max_length=50, blank=True, null=True)
     subject_object = GenericForeignKey('subject_content_type', 'subject_object_id')
+    objects = NotificationQuerySet.as_manager()
 
     class Meta:
         verbose_name = _("Notification")
