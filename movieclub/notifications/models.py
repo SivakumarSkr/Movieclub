@@ -1,4 +1,4 @@
-from django.contrib.auth.models import User
+from django.conf import settings
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
@@ -44,8 +44,9 @@ class Notification(models.Model):
         (FOLLOWING, 'following'),
         (POSTED, 'posted'),
     )
-    creator = models.ForeignKey(User, on_delete=models.CASCADE, related_name='creator')
-    receiver = models.ForeignKey(User, on_delete=models.CASCADE, related_name='receiver',
+    creator = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
+                                related_name='creator')
+    receiver = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='receiver',
                                  blank=False)
     unread = models.BooleanField(default=True)
     slug = models.SlugField(max_length=210, null=True, blank=True)

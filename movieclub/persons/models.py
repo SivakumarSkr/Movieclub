@@ -1,3 +1,5 @@
+import datetime
+
 from django.db import models
 
 
@@ -9,8 +11,8 @@ class SocialMedia(models.Model):
     instagram = models.URLField(null=True)
 
 
-# class StarQuerySet(models.query.QuerySet):
-#     pass
+class StarQuerySet(models.query.QuerySet):
+    pass
 
 
 class Star(models.Model):
@@ -21,4 +23,10 @@ class Star(models.Model):
     social_media = models.OneToOneField(SocialMedia, on_delete=models.PROTECT,
                                         related_name='star')
     biography = models.TextField()
-    # objects = StarQuerySet.as_manager()
+    objects = StarQuerySet.as_manager()
+
+    @property
+    def get_age(self):
+        current = datetime.datetime.now().year
+        dob = self.date_of_birth.year
+        return current - dob

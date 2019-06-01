@@ -1,7 +1,9 @@
 from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator
 import datetime
-from movieclub.contents.models import Content
+
+from django.conf import settings
+from persons.models import Star
 
 
 # Create your models here.
@@ -20,7 +22,7 @@ class MovieQuerySet(models.query.QuerySet):
 
     @staticmethod
     def get_by_stars(star):
-        return star.movies.all()
+        return star.movie_set.all()
 
     def get_by_language(self, language=None):
         return self.filter(language=language)
@@ -36,12 +38,12 @@ class MovieQuerySet(models.query.QuerySet):
 
 class Genre(models.Model):
     name = models.CharField(max_length=20)
-    # followers = models.ManyToManyField('User')
+    followers = models.ManyToManyField(settings.AUTH_USER_MODEL)
 
 
 class Language(models.Model):
     name = models.CharField(max_length=20)
-    # followers = models.ManyToManyField('User')
+    followers = models.ManyToManyField(settings.AUTH_USER_MODEL)
 
 
 class Movie(models.Model):
@@ -50,11 +52,12 @@ class Movie(models.Model):
                                         [MinValueValidator(1900),
                                          MaxValueValidator(datetime.date.today().year)])
     language = models.ForeignKey(Language, on_delete=models.PROTECT,
-                                 related_name='movies')
-    genre = models.ManyToManyField(Genre, related_name='movies')
+                                 related_name='movies_language')
+    genre = models.ManyToManyField(Genre, related_name='movies_genre')
     country = models.CharField(max_length=40)
-    director = models.ForeignKey(Star, on_delete=models.PROTECT, related_name='movie')
-    writers = models.ManyToManyField(Star, related_name='movie')
-    stars = models.ManyToManyField(Star, related_name='movie')
+    director = models.ForeignKey(Star, on_delete=models.PROTECT,
+                                 related_name='movies_director')
+    writers = models.ManyToManyField(Star, related_name='movies_writer')
+    stars = models.ManyToManyField(Star)
     # thumbnail = models.ImageField()
     objects = MovieQuerySet.as_manager()
