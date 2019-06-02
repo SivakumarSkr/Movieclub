@@ -34,6 +34,9 @@ class Topic(models.Model):
     followers = models.ManyToManyField(settings.AUTH_USER_MODEL)
     no_of_watches = models.PositiveIntegerField()
 
+    class Meta:
+        ordering = ("-time",)
+
     def follow_the_topic(self, user):
         self.followers.add(user)
         self.save()

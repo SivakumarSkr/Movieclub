@@ -48,7 +48,9 @@ DEFAULT_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 ]
-THIRD_PARTY_APPS = []
+THIRD_PARTY_APPS = [
+    'django_extensions',
+]
 
 INSTALLED_APPS = LOCAL_APPS + DEFAULT_APPS + THIRD_PARTY_APPS
 
