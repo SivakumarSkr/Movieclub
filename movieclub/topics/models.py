@@ -32,7 +32,7 @@ class Topic(models.Model):
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
                                    related_name='topics')
     followers = models.ManyToManyField(settings.AUTH_USER_MODEL)
-    no_of_watches = models.PositiveIntegerField()
+    no_of_watches = models.PositiveIntegerField(default=0)
 
     class Meta:
         ordering = ("-time",)
@@ -50,7 +50,6 @@ class Topic(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = slugify(f'{self.head} {self.time}',
-                                to_lower=True, max_length=300)
+            self.slug = slugify(f"{self.head} {self.time}",)
         super().save(*args, **kwargs)
 

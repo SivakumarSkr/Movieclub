@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
+from django.utils.text import slugify
 from django.utils.timezone import now
 from topics.models import Topic
 from movies.models import Movie
@@ -47,13 +48,27 @@ class Content(models.Model):
 
 class Blog(Content):
     topic = models.ForeignKey(Topic, on_delete=models.CASCADE)
+    slug = models.SlugField(max_length=100, null=True, blank=True)
 
     class Meta:
         ordering = ("-time",)
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(f"{self.user.username}'s answer on {self.topic.head}",)
+
+        super().save(*args, **kwargs)
 
 
 class Review(Content):
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
+    slug = models.SlugField(max_length=100, null=True, blank=True)
 
     class Meta:
         ordering = ("-time",)
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(f"{self.user.name}'s review on {self.movie.name} {self.movie.released_year}",
+                                to_lower=True, max_length=80)
+        super().save(*args, **kwargs)
