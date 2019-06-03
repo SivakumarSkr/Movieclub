@@ -22,18 +22,18 @@ class MovieQuerySet(models.query.QuerySet):
 
     @staticmethod
     def get_by_stars(star):
-        return star.movie_set.all()
+        return star.movies_star.all()
 
     def get_by_language(self, language=None):
         return self.filter(language=language)
 
     @staticmethod
     def get_by_genre(genre):
-        return genre.movies.all()
+        return genre.movies_genre.all()
 
     @staticmethod
     def get_by_writer(writer):
-        return writer.movies.all()
+        return writer.movies_writer.all()
 
 
 class Genre(models.Model):
@@ -58,6 +58,6 @@ class Movie(models.Model):
     director = models.ForeignKey(Star, on_delete=models.PROTECT,
                                  related_name='movies_director')
     writers = models.ManyToManyField(Star, related_name='movies_writer')
-    stars = models.ManyToManyField(Star)
+    stars = models.ManyToManyField(Star, related_name='movies_star')
     # thumbnail = models.ImageField()
     objects = MovieQuerySet.as_manager()

@@ -28,6 +28,12 @@ class User(AbstractUser):
         qs = self.following.all()
         return qs
 
+    def get_number_followers(self):
+        return self.followers.all().count()
+
+    def get_number_following(self):
+        return self.following.all().count()
+
 
 
 
