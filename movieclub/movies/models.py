@@ -6,9 +6,16 @@ import datetime
 from django.conf import settings
 from persons.models import Star
 
-
 # Create your models here.
 from users.models import User
+
+
+def upload_to_movies(instance, filename):
+    return 'images/{}/{}/{}'.format(instance.name, instance.released_year, filename)
+
+
+def upload_to(instance, filname):
+    return 'images/{}/{}/{}'.format('%(class)', instance.name, filname)
 
 
 class MovieQuerySet(models.query.QuerySet):
@@ -42,12 +49,14 @@ class MovieQuerySet(models.query.QuerySet):
 
 class Genre(models.Model):
     name = models.CharField(max_length=20)
+    thumbnail = models.ImageField(upload_to=upload_to, null=True)
     followers = models.ManyToManyField(settings.AUTH_USER_MODEL)
 
 
 class Language(models.Model):
     name = models.CharField(max_length=20)
     followers = models.ManyToManyField(settings.AUTH_USER_MODEL)
+    thumbnail = models.ImageField(upload_to=upload_to, null=True)
 
 
 class Movie(models.Model):
@@ -63,7 +72,7 @@ class Movie(models.Model):
                                  related_name='movies_director')
     writers = models.ManyToManyField(Star, related_name='movies_writer')
     stars = models.ManyToManyField(Star, related_name='movies_star')
-    # thumbnail = models.ImageField()
+    thumbnail = models.ImageField(upload_to=upload_to_movies, null=True)
     suggestion = GenericRelation('suggestions.Suggestion')
     objects = MovieQuerySet.as_manager()
 

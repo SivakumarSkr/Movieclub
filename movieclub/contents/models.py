@@ -33,7 +33,7 @@ class Content(models.Model):
     watched = models.PositiveIntegerField(default=0)
     status = models.CharField(max_length=1, choices=STATUS, default='D')
     tags = TaggableManager()
-    contents = MarkdownxField()
+    contents = MarkdownxField(null=True)
 
     liked = models.ManyToManyField(settings.AUTH_USER_MODEL,
                                    related_name="%(class)s_liked")
@@ -42,6 +42,7 @@ class Content(models.Model):
     suggestion = GenericRelation('suggestions.Suggestion')
     objects = ContentQuerySet.as_manager()
     share = GenericRelation('shares.Share')
+    image = models.ImageField(upload_to='contents/%(class)/%Y/%m/%d', null=True)
 
     class Meta:
         abstract = True
@@ -76,14 +77,14 @@ class Content(models.Model):
 
 class Answer(Content):
     topic = models.ForeignKey(Topic, on_delete=models.CASCADE)
-    slug = models.SlugField(max_length=100, null=True, blank=True)
+    slug = models.SlugField(max_length=200, null=True, blank=True)
 
     class Meta:
         ordering = ("-time",)
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = slugify(f"{self.user.username}'s answer on {self.topic.head}", )
+            self.slug = str(slugify(self.topic))
 
         super().save(*args, **kwargs)
 
@@ -98,20 +99,19 @@ class Review(Content):
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = slugify(f"{self.user.name}'s review on {self.movie.name} {self.movie.released_year}",
-                                to_lower=True, max_length=80)
+            self.slug = slugify("{}'s review on {} {}".format(
+                self.user.name, self.movie.name, self.movie.released_year))
         super().save(*args, **kwargs)
 
 
 class Blog(Content):
     heading = models.CharField(max_length=300)
-    slug = models.SlugField(max_length=100, null=True, blank=True)
-
-    def save(self, *args, **kwargs):
-        if not self.slug:
-            self.slug = slugify(f"{self.heading}",
-                                to_lower=True, max_length=80)
-        super().save(*args, **kwargs)
+    # slug = models.SlugField(max_length=100, null=True, blank=True)
+    #
+    # def save(self, *args, **kwargs):
+    #     if not self.slug:
+    #         self.slug = slugify(self.heading)
+    #     super().save(*args, **kwargs)
 
 
 class Status(models.Model):
@@ -126,3 +126,4 @@ class Status(models.Model):
     add_content = models.TextField()
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     action = models.CharField(max_length=1, choices=ACTION)
+    image = models.ImageField(upload_to='status_images/%Y/%m/%d/', null=True)
