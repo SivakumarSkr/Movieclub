@@ -1,10 +1,10 @@
 from django.test import TestCase
 from users.models import User
-from contents.models import Blog, Review
+from contents.models import Answer, Review
 from django.utils.timezone import now
 from topics.models import Topic
 
-class BlogTest(TestCase):
+class AnswerTest(TestCase):
 
     def setUp(self):
         self.user1 = User.objects.create(username='user1', password='user1@user')
@@ -23,13 +23,13 @@ class BlogTest(TestCase):
             time=now(),
             created_by=self.topic_user,
         )
-        self.b1 = Blog.objects.create(
+        self.b1 = Answer.objects.create(
             time=now(),
             user=self.user1,
             contents='this is just a begining',
             topic=self.topic1,
         )
-        self.b2 = Blog.objects.create(
+        self.b2 = Answer.objects.create(
             time=now(),
             user=self.user2,
             contents='this is another begining',

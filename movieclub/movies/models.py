@@ -1,3 +1,4 @@
+from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator
 import datetime
@@ -7,6 +8,9 @@ from persons.models import Star
 
 
 # Create your models here.
+from users.models import User
+
+
 class MovieQuerySet(models.query.QuerySet):
 
     def get_by_year(self, year):
@@ -60,4 +64,12 @@ class Movie(models.Model):
     writers = models.ManyToManyField(Star, related_name='movies_writer')
     stars = models.ManyToManyField(Star, related_name='movies_star')
     # thumbnail = models.ImageField()
+    suggestion = GenericRelation('suggestions.Suggestion')
     objects = MovieQuerySet.as_manager()
+
+
+class Rating(models.Model):
+    movie = models.ForeignKey(Movie, on_delete=models.CASCADE, related_name='ratings')
+    user = models.ForeignKey(User, on_delete=models.CASCADE,
+                             related_name='user_ratings')
+    rate = models.PositiveSmallIntegerField(validators=[MaxValueValidator(10), MinValueValidator(0)])

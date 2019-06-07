@@ -39,6 +39,8 @@ LOCAL_APPS = [
     'persons',
     'topics',
     'users',
+    'suggestions',
+    'shares',
 ]
 DEFAULT_APPS = [
     'django.contrib.admin',
@@ -50,6 +52,8 @@ DEFAULT_APPS = [
 ]
 THIRD_PARTY_APPS = [
     'django_extensions',
+    'taggit',
+    'markdownx',
 ]
 
 INSTALLED_APPS = LOCAL_APPS + DEFAULT_APPS + THIRD_PARTY_APPS
