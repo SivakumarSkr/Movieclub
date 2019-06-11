@@ -15,4 +15,5 @@ class Share(models.Model):
     share_content_object_id = models.CharField(max_length=50, null=True, blank=True)
     sharing_object = GenericForeignKey("share_content_type",
                                        "share_content_object_id")
-    share_the_share = GenericRelation('self')
+    share_objects = GenericRelation('self')
+    set_comments = GenericRelation('comments.Comment')

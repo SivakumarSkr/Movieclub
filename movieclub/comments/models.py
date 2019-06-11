@@ -7,7 +7,10 @@ from django.db import models
 
 # Create your models here.
 from django.utils.timezone import now
+class CommentQuerySet(models.query.QuerySet):
 
+    def get_comments_of_post(self, post):
+        pass
 
 class Comment(models.Model):
     uuid_id = models.UUIDField(default=uuid.uuid4, primary_key=True)
@@ -21,4 +24,4 @@ class Comment(models.Model):
     post_content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     post_content_object_id = models.CharField(max_length=20)
     post_object = GenericForeignKey('post_content_type', 'post_content_object_id')
-    comment_the_comment = GenericRelation('self')
+    set_comments = GenericRelation('self')

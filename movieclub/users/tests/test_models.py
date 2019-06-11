@@ -46,7 +46,7 @@ class UserModelTest(TestCase):
         self.assertEqual(list(self.user2.following.all()), [self.user1])
         self.assertEqual(list(self.user3.followers.all()), [self.user1])
 
-    def test_get_followers(self):
+    def test_get_no_followers(self):
         self.user1.follow(self.user2)
         self.user1.follow(self.user3)
         self.assertEqual(self.user1.get_number_followers(), 2)
@@ -54,3 +54,10 @@ class UserModelTest(TestCase):
         self.assertEqual(self.user3.get_number_following(), 1)
         self.assertEqual(self.user3.get_number_following(), 1)
 
+    def test_get_followers(self):
+        self.user1.follow(self.user2)
+        self.user1.follow(self.user3)
+        self.assertEqual(list(self.user1.get_followers()), [self.user2, self.user3])
+        self.assertEqual(list(self.user3.get_followers()), [])
+        self.assertEqual(list(self.user3.get_following()), [self.user1])
+        self.assertEqual(list(self.user1.get_following()), [])

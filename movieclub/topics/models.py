@@ -5,6 +5,7 @@ from django.utils.text import slugify
 from django.utils.timezone import now
 from taggit.managers import TaggableManager
 
+
 # Create your models here.
 
 class TopicQuerySet(models.query.QuerySet):
@@ -54,6 +55,5 @@ class Topic(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = slugify(f"{self.head} {self.time}",)
+            self.slug = slugify(f"{self.head} {self.time}", )
         super().save(*args, **kwargs)
-

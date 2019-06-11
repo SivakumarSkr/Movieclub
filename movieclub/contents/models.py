@@ -41,8 +41,9 @@ class Content(models.Model):
                                       related_name="%(class)s_disliked")
     suggestion = GenericRelation('suggestions.Suggestion')
     objects = ContentQuerySet.as_manager()
-    share = GenericRelation('shares.Share')
+    share_object = GenericRelation('shares.Share')
     image = models.ImageField(upload_to='contents/%(class)/%Y/%m/%d', null=True)
+    set_comments = GenericRelation('comments.Comment')
 
     class Meta:
         abstract = True
@@ -127,3 +128,4 @@ class Status(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     action = models.CharField(max_length=1, choices=ACTION)
     image = models.ImageField(upload_to='status_images/%Y/%m/%d/', null=True)
+    set_comments = GenericRelation('comments.Comment')
