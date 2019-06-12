@@ -48,6 +48,7 @@ class Topic(models.Model):
 
     def un_follow_the_topic(self, user):
         self.followers.remove(user)
+        self.save()
 
     def watched(self):
         self.no_of_watches += 1

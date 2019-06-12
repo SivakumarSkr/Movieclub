@@ -31,3 +31,5 @@ class Suggestion(models.Model):
         return text
 
 
+
+
