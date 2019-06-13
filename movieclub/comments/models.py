@@ -7,10 +7,18 @@ from django.db import models
 
 # Create your models here.
 from django.utils.timezone import now
+
+
 class CommentQuerySet(models.query.QuerySet):
 
-    def get_comments_of_post(self, post):
-        pass
+    @staticmethod
+    def get_comments_of_post(post):
+        return post.set_comments.all()
+
+    @staticmethod
+    def get_user_comments(post, user):
+        return post.set_comments.all(user=user)
+
 
 class Comment(models.Model):
     uuid_id = models.UUIDField(default=uuid.uuid4, primary_key=True)
