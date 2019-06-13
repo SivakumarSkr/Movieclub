@@ -1,7 +1,7 @@
 from django.db import models
 from django.conf import settings
 from django.utils.timezone import now
-
+from contents.models import Content
 
 # Create your models here.
 class GroupQuerySet(models.query.QuerySet):
@@ -31,3 +31,10 @@ class Group(models.Model):
 
     def get_followers(self):
         return self.followers.all()
+
+
+class GroupBlog(Content):
+    heading = models.CharField(max_length=300)
+    group = models.ForeignKey(Group, on_delete=models.CASCADE, related_name='blog')
+
+

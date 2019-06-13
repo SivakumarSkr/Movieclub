@@ -4,13 +4,14 @@ from contents.models import Answer, Review
 from django.utils.timezone import now
 from topics.models import Topic
 
+
 class AnswerTest(TestCase):
 
     def setUp(self):
         self.user1 = User.objects.create(username='user1', password='user1@user')
         self.user2 = User.objects.create(username='user2', password='user1@user')
         self.liked_u = User.objects.create(username='userl', password='user2@user')
-        self.disliked_u = User.objects.create(username='userd',password='user3@user')
+        self.disliked_u = User.objects.create(username='userd', password='user3@user')
         self.topic_user = User.objects.create(username='usert', password='user4@user')
         self.topic_user2 = User.objects.create(username='usert2', password='user4@user')
         self.topic1 = Topic.objects.create(
@@ -72,4 +73,3 @@ class AnswerTest(TestCase):
         self.assertEqual(self.b1.get_dislike(), 2)
         self.b1.like_the_content(self.user2)
         self.assertEqual(self.b1.get_dislike(), 1)
-

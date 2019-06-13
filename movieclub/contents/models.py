@@ -107,12 +107,12 @@ class Review(Content):
 
 class Blog(Content):
     heading = models.CharField(max_length=300)
-    # slug = models.SlugField(max_length=100, null=True, blank=True)
-    #
-    # def save(self, *args, **kwargs):
-    #     if not self.slug:
-    #         self.slug = slugify(self.heading)
-    #     super().save(*args, **kwargs)
+    slug = models.SlugField(max_length=100, null=True, blank=True)
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.heading)
+        super().save(*args, **kwargs)
 
 
 class Status(models.Model):
