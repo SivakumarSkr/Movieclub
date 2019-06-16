@@ -36,6 +36,8 @@ class AnswerTest(TestCase):
             contents='this is another begining',
             topic=self.topic2,
         )
+        self.b1.save()
+        self.b2.save()
 
     def test_content_watched(self):
         self.b1.content_watched()
@@ -73,3 +75,6 @@ class AnswerTest(TestCase):
         self.assertEqual(self.b1.get_dislike(), 2)
         self.b1.like_the_content(self.user2)
         self.assertEqual(self.b1.get_dislike(), 1)
+
+    def test_content(self):
+        self.assertEqual(self.b1.contents, 'this is just a begining')

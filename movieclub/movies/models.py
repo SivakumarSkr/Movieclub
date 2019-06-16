@@ -49,14 +49,20 @@ class MovieQuerySet(models.query.QuerySet):
 
 class Genre(models.Model):
     name = models.CharField(max_length=20)
-    thumbnail = models.ImageField(upload_to=upload_to, null=True)
-    followers = models.ManyToManyField(settings.AUTH_USER_MODEL)
+    thumbnail = models.ImageField(upload_to=upload_to, null=True, blank=True)
+    followers = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True)
+
+    def __str__(self):
+        return self.name
 
 
 class Language(models.Model):
     name = models.CharField(max_length=20)
-    followers = models.ManyToManyField(settings.AUTH_USER_MODEL)
-    thumbnail = models.ImageField(upload_to=upload_to, null=True)
+    followers = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True)
+    thumbnail = models.ImageField(upload_to=upload_to, null=True, blank=True)
+
+    def __str__(self):
+        return self.name
 
 
 class Movie(models.Model):
@@ -75,6 +81,9 @@ class Movie(models.Model):
     thumbnail = models.ImageField(upload_to=upload_to_movies, null=True)
     suggestion = GenericRelation('suggestions.Suggestion')
     objects = MovieQuerySet.as_manager()
+
+    def __str__(self):
+        return self.name
 
 
 class Rating(models.Model):

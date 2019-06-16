@@ -32,17 +32,18 @@ class Content(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     watched = models.PositiveIntegerField(default=0)
     status = models.CharField(max_length=1, choices=STATUS, default='D')
-    tags = TaggableManager()
-    contents = MarkdownxField(null=True)
+    tags = TaggableManager(blank=True)
+    contents = MarkdownxField()
 
     liked = models.ManyToManyField(settings.AUTH_USER_MODEL,
-                                   related_name="%(class)s_liked")
+                                   related_name="%(class)s_liked", blank=True)
     disliked = models.ManyToManyField(settings.AUTH_USER_MODEL,
-                                      related_name="%(class)s_disliked")
+                                      related_name="%(class)s_disliked", blank=True)
     suggestion = GenericRelation('suggestions.Suggestion')
     objects = ContentQuerySet.as_manager()
     share_object = GenericRelation('shares.Share')
-    image = models.ImageField(upload_to='contents/%(class)/%Y/%m/%d', null=True)
+    image = models.ImageField(upload_to='contents/%(class)/%Y/%m/%d', null=True,
+                              blank=True)
     set_comments = GenericRelation('comments.Comment')
 
     class Meta:
@@ -81,11 +82,13 @@ class Answer(Content):
     slug = models.SlugField(max_length=200, null=True, blank=True)
 
     class Meta:
+        verbose_name = "Answer"
+        verbose_name_plural = "Answers"
         ordering = ("-time",)
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = str(slugify(self.topic))
+            self.slug = slugify(self.topic)
 
         super().save(*args, **kwargs)
 
