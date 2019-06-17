@@ -1,7 +1,10 @@
+import uuid
+
 from django.db import models
 from django.conf import settings
 from django.utils.timezone import now
 from contents.models import Content
+
 
 # Create your models here.
 class GroupQuerySet(models.query.QuerySet):
@@ -37,9 +40,17 @@ class Group(models.Model):
     def get_followers(self):
         return self.followers.all()
 
+    def get_follower(self):
+        return self.followers.all()
+
+    def get_admins(self):
+        return self.admins.all()
+
 
 class GroupBlog(Content):
+    uuid_ui = models.UUIDField(default=uuid.uuid4)
     heading = models.CharField(max_length=300)
     group = models.ForeignKey(Group, on_delete=models.CASCADE, related_name='blog')
 
-
+    def __str__(self):
+        return self.heading

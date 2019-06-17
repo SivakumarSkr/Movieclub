@@ -33,20 +33,8 @@ class MovieQuerySet(models.query.QuerySet):
     def get_by_director(self, director):
         return self.filter(director=director)
 
-    @staticmethod
-    def get_by_stars(star):
-        return star.movies_star.all()
-
     def get_by_language(self, language=None):
         return self.filter(language=language)
-
-    @staticmethod
-    def get_by_genre(genre):
-        return genre.movies_genre.all()
-
-    @staticmethod
-    def get_by_writer(writer):
-        return writer.movies_writer.all()
 
 
 class Genre(models.Model):
@@ -57,6 +45,9 @@ class Genre(models.Model):
     def __str__(self):
         return self.name
 
+    def check_following(self, user):
+        return user in self.followers.all()
+
 
 class Language(models.Model):
     name = models.CharField(max_length=20)
@@ -65,6 +56,9 @@ class Language(models.Model):
 
     def __str__(self):
         return self.name
+
+    def check_following(self, user):
+        return user in self.followers.all()
 
 
 class Movie(models.Model):
@@ -79,6 +73,8 @@ class Movie(models.Model):
     country = models.CharField(max_length=40)
     director = models.ForeignKey(Star, on_delete=models.PROTECT,
                                  related_name='movies_director')
+    rating = models.PositiveSmallIntegerField(default=0, validators=[MaxValueValidator(10),
+                                                        MinValueValidator(0)])
     writers = models.ManyToManyField(Star, related_name='movies_writer')
     stars = models.ManyToManyField(Star, related_name='movies_star')
     thumbnail = models.ImageField(upload_to=upload_to_movies, null=True)
@@ -88,9 +84,19 @@ class Movie(models.Model):
     def __str__(self):
         return self.name
 
+    def set_rate(self):
+        a = 0
+        for i in self.ratings.all():
+            a += i.rate
+        count = self.ratings.count()
+        self.rating = a//count
+        self.save()
+
 
 class Rating(models.Model):
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE, related_name='ratings')
     user = models.ForeignKey(User, on_delete=models.CASCADE,
                              related_name='user_ratings')
-    rate = models.PositiveSmallIntegerField(validators=[MaxValueValidator(10), MinValueValidator(0)])
+    rate = models.PositiveSmallIntegerField(validators=[MaxValueValidator(10),
+                                                        MinValueValidator(0)])
+
