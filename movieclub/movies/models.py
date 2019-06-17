@@ -1,3 +1,5 @@
+import uuid
+
 from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator
@@ -5,7 +7,7 @@ import datetime
 
 from django.conf import settings
 from persons.models import Star
-
+from suggestions.models import Suggestion
 # Create your models here.
 from users.models import User
 
@@ -66,6 +68,7 @@ class Language(models.Model):
 
 
 class Movie(models.Model):
+    # uuid_id = models.UUIDField(default=uuid.uuid4)
     name = models.CharField(max_length=30)
     released_year = models.IntegerField(validators=
                                         [MinValueValidator(1900),
@@ -79,7 +82,7 @@ class Movie(models.Model):
     writers = models.ManyToManyField(Star, related_name='movies_writer')
     stars = models.ManyToManyField(Star, related_name='movies_star')
     thumbnail = models.ImageField(upload_to=upload_to_movies, null=True)
-    suggestion = GenericRelation('suggestions.Suggestion')
+    suggestions = GenericRelation(Suggestion, related_query_name='movie_suggestion')
     objects = MovieQuerySet.as_manager()
 
     def __str__(self):

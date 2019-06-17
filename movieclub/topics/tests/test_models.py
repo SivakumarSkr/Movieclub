@@ -3,6 +3,7 @@ from users.models import User
 from topics.models import Topic
 from django.utils.timezone import now
 
+
 class TopicTest(TestCase):
 
     @classmethod
@@ -34,6 +35,3 @@ class TopicTest(TestCase):
         self.t1.watched()
         self.t1.watched()
         self.assertEqual(self.t1.no_of_watches, 2)
-
-
-

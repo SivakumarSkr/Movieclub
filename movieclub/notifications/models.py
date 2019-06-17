@@ -35,6 +35,7 @@ class Notification(models.Model):
     ANSWERED = 'A'
     FOLLOWING = 'F'
     POSTED = 'P'
+    REPLIED = 'R'
 
     NOTIFICATION_TYPE = (
         (LIKED, 'liked'),
@@ -43,6 +44,8 @@ class Notification(models.Model):
         (ANSWERED, 'answered'),
         (FOLLOWING, 'following'),
         (POSTED, 'posted'),
+        (REPLIED, 'replied'),
+
     )
     creator = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
                                 related_name='creator')

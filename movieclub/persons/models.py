@@ -19,9 +19,9 @@ class Star(models.Model):
     name = models.CharField(max_length=30, blank=False)
     date_of_birth = models.DateField()
     country = models.CharField(max_length=30)
-    # photo = models.ImageField()
+    photo = models.ImageField(upload_to='', default='', blank=True)
     social_media = models.OneToOneField(SocialMedia, on_delete=models.PROTECT,
-                                        related_name='star')
+                                        related_name='star', null=True)
     biography = models.TextField()
     objects = StarQuerySet.as_manager()
 

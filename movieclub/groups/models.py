@@ -15,8 +15,13 @@ class Group(models.Model):
     time_created = models.DateTimeField(default=now)
     description = models.TextField(max_length=500)
     creator = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    admins = models.ManyToManyField(settings.AUTH_USER_MODEL,
+                                    related_name='groups_admin', blank=True)
     followers = models.ManyToManyField(settings.AUTH_USER_MODEL,
                                        related_name='groups_followed')
+
+    def __str__(self):
+        return self.name
 
     def follow(self, user):
         self.followers.add(user)
