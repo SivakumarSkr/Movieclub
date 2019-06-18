@@ -4,7 +4,8 @@ from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator
 import datetime
-
+from django.db.models import signals
+from django.dispatch import receiver
 from django.conf import settings
 from persons.models import Star
 from suggestions.models import Suggestion
@@ -89,7 +90,7 @@ class Movie(models.Model):
         for i in self.ratings.all():
             a += i.rate
         count = self.ratings.count()
-        self.rating = a//count
+        self.rating = round(a/count)
         self.save()
 
 
@@ -100,3 +101,8 @@ class Rating(models.Model):
     rate = models.PositiveSmallIntegerField(validators=[MaxValueValidator(10),
                                                         MinValueValidator(0)])
 
+
+@receiver(signals.post_save, sender=Rating)
+def create_customer(sender, instance, created, **kwargs):
+    movie_obj = instance.movie
+    movie_obj.set_rate()
