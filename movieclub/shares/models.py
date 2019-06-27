@@ -17,3 +17,10 @@ class Share(models.Model):
                                        "share_content_object_id")
     share_objects = GenericRelation('self')
     set_comments = GenericRelation('comments.Comment')
+
+    def like_the_share(self, user):
+        self.liked.add(user)
+        self.save()
+
+    def get_comments(self):
+        return self.set_comments.all()

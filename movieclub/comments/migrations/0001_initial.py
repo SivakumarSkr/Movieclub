@@ -2,6 +2,7 @@
 
 from django.db import migrations, models
 import django.utils.timezone
+import uuid
 
 
 class Migration(migrations.Migration):
@@ -13,11 +14,13 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Share',
+            name='Comment',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('uuid_id', models.UUIDField(default=uuid.uuid4, primary_key=True, serialize=False)),
                 ('time', models.DateTimeField(default=django.utils.timezone.now)),
-                ('share_content_object_id', models.CharField(blank=True, max_length=50, null=True)),
+                ('text', models.TextField()),
+                ('image', models.ImageField(blank=True, null=True, upload_to='')),
+                ('post_content_object_id', models.CharField(max_length=20)),
             ],
         ),
     ]

@@ -1,6 +1,8 @@
 from django.test import TestCase
 from users.models import User
 
+from topics.models import Topic
+
 
 class UserModelTest(TestCase):
 
@@ -8,6 +10,19 @@ class UserModelTest(TestCase):
         self.user1 = User.objects.create(username='user1', password='user1@user')
         self.user2 = User.objects.create(username='user2', password='user2@user')
         self.user3 = User.objects.create(username='user3', password='user3@user')
+        self.t1 = Topic.objects.create(
+            head='brilliance of dileesh',
+            created_by=self.user1,
+        )
+        self.t1.followers.add(self.user2)
+        self.t1.save()
+
+        self.t2 = Topic.objects.create(
+            head='brilliance of lijo',
+            created_by=self.user1,
+        )
+        self.t2.followers.add(self.user2)
+        self.t2.save()
 
     def test_follow(self):
         self.user1.follow(self.user2)
@@ -61,3 +76,10 @@ class UserModelTest(TestCase):
         self.assertEqual(list(self.user3.get_followers()), [])
         self.assertEqual(list(self.user3.get_following()), [self.user1])
         self.assertEqual(list(self.user1.get_following()), [])
+
+    def test_get_followed_topics(self):
+        a = self.user2.get_followed_topics()
+        self.assertEqual(a.count(), 2)
+
+    def test_get_drafted_blog(self):
+        pass

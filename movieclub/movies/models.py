@@ -75,7 +75,7 @@ class Movie(models.Model):
     director = models.ForeignKey(Star, on_delete=models.PROTECT,
                                  related_name='movies_director')
     rating = models.PositiveSmallIntegerField(default=0, validators=[MaxValueValidator(10),
-                                                        MinValueValidator(0)])
+                                                                     MinValueValidator(0)])
     writers = models.ManyToManyField(Star, related_name='movies_writer')
     stars = models.ManyToManyField(Star, related_name='movies_star')
     thumbnail = models.ImageField(upload_to=upload_to_movies, null=True)
@@ -90,8 +90,14 @@ class Movie(models.Model):
         for i in self.ratings.all():
             a += i.rate
         count = self.ratings.count()
-        self.rating = round(a/count)
+        self.rating = round(a / count)
         self.save()
+
+    def get_stars(self):
+        return self.stars.all()
+
+    def get_writers(self):
+        return self.writers.all()
 
 
 class Rating(models.Model):

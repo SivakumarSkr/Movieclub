@@ -10,14 +10,7 @@ from django.utils.timezone import now
 
 
 class CommentQuerySet(models.query.QuerySet):
-
-    @staticmethod
-    def get_comments_of_post(post):
-        return post.set_comments.all()
-
-    @staticmethod
-    def get_user_comments(post, user):
-        return post.set_comments.all(user=user)
+    pass
 
 
 class Comment(models.Model):
@@ -55,3 +48,6 @@ class Comment(models.Model):
 
     def get_no_dislikes(self):
         return self.dislikes.count()
+
+    def get_comments(self):
+        return self.set_comments.all(order_by='-time')

@@ -34,6 +34,11 @@ class User(AbstractUser):
     def get_number_following(self):
         return self.following.all().count()
 
+    def get_followed_topics(self):
+        return self.topics_followed.all()
+
+    def get_drafted_blog(self):
+        return self.blog_set.filter(status='D')
 
 
 

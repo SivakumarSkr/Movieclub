@@ -11,18 +11,12 @@ from taggit.managers import TaggableManager
 class TopicQuerySet(models.query.QuerySet):
 
     def get_latest_topics(self):
-        pass
+        return self.order_by('-time')
 
     def get_trending(self):
-        pass
-
-    def get_followed_by_user(self, user):
-        pass
+        return self.order_by('no_of_watches')
 
     def get_most_followed(self):
-        pass
-
-    def get_watched_by_user(self, user):
         pass
 
 
@@ -34,13 +28,15 @@ class Topic(models.Model):
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
                                    related_name='topics')
     tags = TaggableManager()
-    followers = models.ManyToManyField(settings.AUTH_USER_MODEL)
+    followers = models.ManyToManyField(settings.AUTH_USER_MODEL,
+                                       related_name='topics_followed', blank=True)
     no_of_watches = models.PositiveIntegerField(default=0)
     suggestion = GenericRelation('suggestions.Suggestion')
     objects = TopicQuerySet.as_manager()
 
     class Meta:
         ordering = ("-time",)
+        get_latest_by = 'time'
 
     def follow_the_topic(self, user):
         self.followers.add(user)

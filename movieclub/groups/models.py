@@ -21,7 +21,7 @@ class Group(models.Model):
     admins = models.ManyToManyField(settings.AUTH_USER_MODEL,
                                     related_name='groups_admin', blank=True)
     followers = models.ManyToManyField(settings.AUTH_USER_MODEL,
-                                       related_name='groups_followed')
+                                       related_name='groups_followed', blank=True)
 
     def __str__(self):
         return self.name

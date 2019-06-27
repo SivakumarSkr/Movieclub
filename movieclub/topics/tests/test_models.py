@@ -21,6 +21,13 @@ class TopicTest(TestCase):
             tags='malayalam, maheshinte prathikaram',
         )
         self.t1.save()
+        self.t2 = Topic.objects.create(
+            head='Brilliance of Dileesh Pothan',
+            time=now(),
+            description='something just like this',
+            created_by=User.objects.get(id=2),
+            tags='malayalam, maheshinte prathikaram',
+        )
 
     def test_follow_the_topic(self):
         u = User.objects.get(id=2)
@@ -35,3 +42,7 @@ class TopicTest(TestCase):
         self.t1.watched()
         self.t1.watched()
         self.assertEqual(self.t1.no_of_watches, 2)
+
+    def test_get_latest(self):
+        a = Topic.objects.get_latest_topics()
+        self.assertEqual(list(a), [self.t2, self.t1])
