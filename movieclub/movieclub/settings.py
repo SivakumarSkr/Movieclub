@@ -33,13 +33,13 @@ LOCAL_APPS = [
     'contents',
     'groups',
     # 'messaging',
-    'movies',
     'notifications',
     'persons',
     'topics',
     'users',
     'suggestions',
     'shares',
+    'movies',
 ]
 DEFAULT_APPS = [
     'django.contrib.admin',

@@ -34,7 +34,6 @@ class Content(models.Model):
     status = models.CharField(max_length=1, choices=STATUS, default='D')
     tags = TaggableManager(blank=True)
     contents = MarkdownxField()
-
     liked = models.ManyToManyField(settings.AUTH_USER_MODEL,
                                    related_name="%(class)s_liked", blank=True)
     disliked = models.ManyToManyField(settings.AUTH_USER_MODEL,
@@ -104,7 +103,7 @@ class Review(Content):
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify("{}'s review on {} {}".format(
-                self.user.name, self.movie.name, self.movie.released_year))
+                self.user.username, self.movie.name, self.movie.released_year))
         super().save(*args, **kwargs)
 
 

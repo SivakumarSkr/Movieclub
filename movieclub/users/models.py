@@ -2,14 +2,17 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from phonenumber_field.modelfields import PhoneNumberField
 
-
 # Create your models here.
+
+
 class User(AbstractUser):
     date_of_birth = models.DateField(null=True)
     contact_no = PhoneNumberField(null=True)
     place = models.CharField(max_length=20, null=True)
     followers = models.ManyToManyField('self', symmetrical=False,
                                        related_name='following')
+    watched_films = models.ManyToManyField('movies.Movie', blank=True)
+
     # image = models.ImageField()
 
     def follow(self, user):
@@ -38,7 +41,19 @@ class User(AbstractUser):
         return self.topics_followed.all()
 
     def get_drafted_blog(self):
-        return self.blog_set.filter(status='D')
+        return self.blog_set.filter(status='D').order_by('-time')
 
+    def get_drafted_review(self):
+        return self.review_set.filter(status='D').order_by('-time')
 
+    def get_drafted_answer(self):
+        return self.answer_set.filter(status='D').order_by('-time')
 
+    def get_followed_groups(self):
+        return self.groups_followed.all()
+
+    def get_watched_films(self):
+        return self.watched_films.all()
+
+    def check_watched(self, movie):
+        return movie in self.watched_films.all()

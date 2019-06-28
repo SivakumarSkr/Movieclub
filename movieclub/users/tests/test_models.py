@@ -1,10 +1,134 @@
+import datetime
+
 from django.test import TestCase
 from users.models import User
-
+import pytest
 from topics.models import Topic
+
+from contents.models import Blog
+
+from contents.models import Review
+from movies.models import Genre, Language, Movie
+from persons.models import Star, SocialMedia
+
+from contents.models import Answer
+
+from groups.models import Group
 
 
 class UserModelTest(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        Genre.objects.create(name='comedy')
+        Genre.objects.create(name='thriller')
+        Language.objects.create(name='malayalam')
+        Language.objects.create(name='tamil')
+        SocialMedia.objects.create(
+            facebook='https://facebook.com',
+            twitter='https://twitter.com',
+            instagram='https://instagram.com',
+        )
+        SocialMedia.objects.create(
+            facebook='https://facebook.com',
+            twitter='https://twitter.com',
+            instagram='https://instagram.com',
+        )
+        SocialMedia.objects.create(
+            facebook='https://facebook.com',
+            twitter='https://twitter.com',
+            instagram='https://instagram.com',
+        )
+        SocialMedia.objects.create(
+            facebook='https://facebook.com',
+            twitter='https://twitter.com',
+            instagram='https://instagram.com',
+        )
+        SocialMedia.objects.create(
+            facebook='https://facebook.com',
+            twitter='https://twitter.com',
+            instagram='https://instagram.com',
+        )
+        SocialMedia.objects.create(
+            facebook='https://facebook.com',
+            twitter='https://twitter.com',
+            instagram='https://instagram.com',
+        )
+        Star.objects.create(
+            name='Lio jos pallissery',
+            date_of_birth=datetime.datetime(1973, 2, 4),
+            country='India',
+            social_media=SocialMedia.objects.get(id=1),
+            biography='he is well known director in malayalam',
+
+        )
+        Star.objects.create(
+            name='Dileesh pothan',
+            date_of_birth=datetime.datetime(1969, 12, 12),
+            country='India',
+            social_media=SocialMedia.objects.get(id=2),
+            biography='he is well known director in malayalam',
+
+        )
+        Star.objects.create(
+            name='Shyam pushkar',
+            date_of_birth=datetime.datetime(1983, 1, 22),
+            country='India',
+            social_media=SocialMedia.objects.get(id=3),
+            biography='he is well known writer in malayalam',
+
+        )
+        Star.objects.create(
+            name='Murali gopi',
+            date_of_birth=datetime.datetime(1981, 11, 27),
+            country='India',
+            social_media=SocialMedia.objects.get(id=4),
+            biography='he is well known writer in malayalam',
+        )
+        Star.objects.create(
+            name='Fahad fasil',
+            date_of_birth=datetime.datetime(1984, 11, 27),
+            country='India',
+            social_media=SocialMedia.objects.get(id=5),
+            biography='he is well known writer in malayalam',
+        )
+        Star.objects.create(
+            name='Prithviraj',
+            date_of_birth=datetime.datetime(1983, 11, 27),
+            country='India',
+            social_media=SocialMedia.objects.get(id=6),
+            biography='he is well known actor in malayalam',
+        )
+        movie1 = Movie(
+            name='Angamaly diaries',
+            released_year=2017,
+            language=Language.objects.get(id=1),
+            country='India',
+            director=Star.objects.get(id=1),
+
+        )
+        movie1.save()
+        movie1.writers.add(Star.objects.get(id=3))
+        movie1.writers.add(Star.objects.get(id=4))
+        movie1.stars.add(Star.objects.get(id=5))
+        movie1.stars.add(Star.objects.get(id=6))
+        movie1.genre.add(Genre.objects.get(id=1))
+        movie1.genre.add(Genre.objects.get(id=2))
+        movie1.save()
+        movie2 = Movie(
+            name='Sudani from Nigeria',
+            released_year=2018,
+            language=Language.objects.get(id=1),
+            country='India',
+            director=Star.objects.get(id=2),
+        )
+        movie2.save()
+        movie2.writers.add(Star.objects.get(id=3))
+        movie2.writers.add(Star.objects.get(id=4))
+        movie2.stars.add(Star.objects.get(id=5))
+        movie2.stars.add(Star.objects.get(id=6))
+        movie2.genre.add(Genre.objects.get(id=1))
+        movie2.save()
+
 
     def setUp(self):
         self.user1 = User.objects.create(username='user1', password='user1@user')
@@ -23,6 +147,49 @@ class UserModelTest(TestCase):
         )
         self.t2.followers.add(self.user2)
         self.t2.save()
+        self.b1 = Blog.objects.create(
+            user=self.user1,
+            status='D',
+            heading="something just like this",
+        )
+        self.b2 = Blog.objects.create(
+            user=self.user1,
+            status='D',
+            heading="something just like this1",
+        )
+        self.r1 = Review.objects.create(
+            user=self.user3,
+            status='D',
+            movie=Movie.objects.all()[1],
+        )
+
+        self.r2 = Review.objects.create(
+            user=self.user3,
+            status='D',
+            movie=Movie.objects.all()[0]
+        )
+        self.a1 = Answer.objects.create(
+            user=self.user2,
+            status='D',
+            topic=self.t2,
+        )
+        self.a2 = Answer.objects.create(
+            user=self.user2,
+            status='D',
+            topic=self.t1,
+        )
+        self.g1 = Group.objects.create(
+            name='korean lovers',
+            creator=self.user2,
+        )
+        self.g1.followers.add(self.user1)
+        self.g1.save()
+        self.g2 = Group.objects.create(
+            name='spanish lovers',
+            creator=self.user3,
+        )
+        self.g2.followers.add(self.user1)
+        self.g2.save()
 
     def test_follow(self):
         self.user1.follow(self.user2)
@@ -82,4 +249,17 @@ class UserModelTest(TestCase):
         self.assertEqual(a.count(), 2)
 
     def test_get_drafted_blog(self):
-        pass
+        a = self.user1.get_drafted_blog()
+        self.assertEqual(a.count(), 2)
+
+    def test_get_drafted_review(self):
+        a = self.user3.get_drafted_review()
+        self.assertEqual(a.count(), 2)
+
+    def test_get_drafted_answer(self):
+        a = self.user2.get_drafted_answer()
+        self.assertEqual(a.count(), 2)
+
+    def test_get_followed_groups(self):
+        a = self.user1.get_followed_groups()
+        self.assertEqual(a.count(), 2)
