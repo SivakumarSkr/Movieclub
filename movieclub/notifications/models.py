@@ -58,7 +58,7 @@ class Notification(models.Model):
     category = models.CharField(max_length=1, choices=NOTIFICATION_TYPE)
     subject_content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE,
                                              blank=True, null=True, related_name='subject')
-    subject_object_id = models.CharField(max_length=50, blank=True, null=True)
+    subject_object_id = models.CharField(max_length=40, blank=True, null=True)
     subject_object = GenericForeignKey('subject_content_type', 'subject_object_id')
     objects = NotificationQuerySet.as_manager()
 

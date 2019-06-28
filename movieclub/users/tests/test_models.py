@@ -15,6 +15,8 @@ from contents.models import Answer
 
 from groups.models import Group
 
+from suggestions.models import Suggestion
+
 
 class UserModelTest(TestCase):
     @classmethod
@@ -129,7 +131,6 @@ class UserModelTest(TestCase):
         movie2.genre.add(Genre.objects.get(id=1))
         movie2.save()
 
-
     def setUp(self):
         self.user1 = User.objects.create(username='user1', password='user1@user')
         self.user2 = User.objects.create(username='user2', password='user2@user')
@@ -190,6 +191,55 @@ class UserModelTest(TestCase):
         )
         self.g2.followers.add(self.user1)
         self.g2.save()
+
+        self.user1.watched_films.add(
+            Movie.objects.all()[0], Movie.objects.all()[1]
+        )
+        self.user3.following_stars.add(Star.objects.all()[2], Star.objects.all()[1])
+        Star.objects.all()[3].followers.add(self.user3)
+        self.user1.save()
+
+        self.s1 = Suggestion.objects.create(
+            sender=self.user1,
+            receiver=self.user2,
+            content_object=Movie.objects.all()[1],
+        )
+        self.s2 = Suggestion.objects.create(
+            sender=self.user3,
+            receiver=self.user2,
+            content_object=self.r1,
+        )
+        self.b1p = Blog.objects.create(
+            user=self.user2,
+            status='P',
+            heading="something just like this",
+        )
+        self.b2p = Blog.objects.create(
+            user=self.user2,
+            status='P',
+            heading="something just like this1",
+        )
+        self.r1p = Review.objects.create(
+            user=self.user1,
+            status='P',
+            movie=Movie.objects.all()[1],
+        )
+
+        self.r2p = Review.objects.create(
+            user=self.user1,
+            status='P',
+            movie=Movie.objects.all()[0]
+        )
+        self.a1p = Answer.objects.create(
+            user=self.user3,
+            status='P',
+            topic=self.t2,
+        )
+        self.a2p = Answer.objects.create(
+            user=self.user3,
+            status='P',
+            topic=self.t1,
+        )
 
     def test_follow(self):
         self.user1.follow(self.user2)
@@ -262,4 +312,28 @@ class UserModelTest(TestCase):
 
     def test_get_followed_groups(self):
         a = self.user1.get_followed_groups()
+        self.assertEqual(a.count(), 2)
+
+    def test_get_watched_films(self):
+        a = self.user1.get_watched_films()
+        self.assertEqual(a.count(), 2)
+
+    def test_get_followed_stars(self):
+        a = self.user3.get_followed_stars()
+        self.assertEqual(a.count(), 3)
+
+    def test_get_suggestions_received(self):
+        a = self.user2.get_suggestions_received()
+        self.assertEqual(a.count(), 2)
+
+    def test_get_published_blog(self):
+        a = self.user2.get_published_blog()
+        self.assertEqual(a.count(), 2)
+
+    def test_get_published_review(self):
+        a = self.user1.get_published_review()
+        self.assertEqual(a.count(), 2)
+
+    def test_get_published_answer(self):
+        a = self.user3.get_published_answer()
         self.assertEqual(a.count(), 2)

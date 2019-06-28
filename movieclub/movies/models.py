@@ -63,7 +63,7 @@ class Language(models.Model):
 
 
 class Movie(models.Model):
-    # uuid_id = models.UUIDField(default=uuid.uuid4)
+    uuid_id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False)
     name = models.CharField(max_length=30)
     released_year = models.IntegerField(validators=
                                         [MinValueValidator(1900),
@@ -101,6 +101,7 @@ class Movie(models.Model):
 
 
 class Rating(models.Model):
+    uuid_id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False)
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE, related_name='ratings')
     user = models.ForeignKey(User, on_delete=models.CASCADE,
                              related_name='user_ratings')

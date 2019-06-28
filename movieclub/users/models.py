@@ -49,6 +49,15 @@ class User(AbstractUser):
     def get_drafted_answer(self):
         return self.answer_set.filter(status='D').order_by('-time')
 
+    def get_published_blog(self):
+        return self.blog_set.filter(status='P').order_by('-time')
+
+    def get_published_review(self):
+        return self.review_set.filter(status='P').order_by('-time')
+
+    def get_published_answer(self):
+        return self.answer_set.filter(status='P').order_by('-time')
+
     def get_followed_groups(self):
         return self.groups_followed.all()
 
@@ -57,3 +66,10 @@ class User(AbstractUser):
 
     def check_watched(self, movie):
         return movie in self.watched_films.all()
+
+    def get_followed_stars(self):
+        return self.following_stars.all()
+
+    def get_suggestions_received(self):
+        return self.suggest_receiver.order_by('-time')
+

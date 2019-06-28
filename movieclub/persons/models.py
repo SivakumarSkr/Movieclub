@@ -1,4 +1,5 @@
 import datetime
+import uuid
 
 from django.conf import settings
 from django.db import models
@@ -7,6 +8,7 @@ from django.db import models
 # Create your models here.
 
 class SocialMedia(models.Model):
+    uuid_id = models.UUIDField(default=uuid.uuid4, primary_key=True)
     facebook = models.URLField(null=True)
     twitter = models.URLField(null=True)
     instagram = models.URLField(null=True)
@@ -17,6 +19,7 @@ class StarQuerySet(models.query.QuerySet):
 
 
 class Star(models.Model):
+    uuid_id = models.UUIDField(default=uuid.uuid4, primary_key=True)
     name = models.CharField(max_length=30, blank=False)
     date_of_birth = models.DateField()
     country = models.CharField(max_length=30)
@@ -26,7 +29,7 @@ class Star(models.Model):
     biography = models.TextField()
     objects = StarQuerySet.as_manager()
     followers = models.ManyToManyField(settings.AUTH_USER_MODEL,
-                                       related_query_name='following_stars')
+                                       related_name='following_stars')
 
     @property
     def get_age(self):

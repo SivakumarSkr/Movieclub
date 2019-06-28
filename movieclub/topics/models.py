@@ -1,3 +1,5 @@
+import uuid
+
 from django.conf import settings
 from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
@@ -21,6 +23,7 @@ class TopicQuerySet(models.query.QuerySet):
 
 
 class Topic(models.Model):
+    uuid_id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False)
     head = models.CharField(max_length=500)
     time = models.DateTimeField(default=now, editable=False)
     description = models.TextField(null=True)

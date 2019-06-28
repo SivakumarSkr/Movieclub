@@ -1,3 +1,5 @@
+import uuid
+
 from django.conf import settings
 from django.contrib.contenttypes.fields import GenericRelation
 from django.contrib.contenttypes.models import ContentType
@@ -28,6 +30,7 @@ class Content(models.Model):
         (DRAFT, 'Draft'),
         (PUBLISHED, 'Published')
     )
+    uuid_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     time = models.DateTimeField(default=now, editable=False)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     watched = models.PositiveIntegerField(default=0)
@@ -125,6 +128,7 @@ class Status(models.Model):
         (FEELING, 'Feeling'),
 
     )
+    uuid_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     time = models.DateTimeField(default=now)
     add_content = models.TextField()
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)

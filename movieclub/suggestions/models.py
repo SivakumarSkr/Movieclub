@@ -18,7 +18,7 @@ class SuggestionQuerySet(models.query.QuerySet):
 
 
 class Suggestion(models.Model):
-    # uuid_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    uuid_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
     sender = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
                                related_name='suggest_sender')
@@ -27,7 +27,7 @@ class Suggestion(models.Model):
     time = models.DateTimeField(default=timezone.now)
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE,
                                      null=True, blank=True)
-    object_id = models.PositiveIntegerField(null=True, blank=True)
+    object_id = models.CharField(max_length=40, null=True, blank=True)
     content_object = GenericForeignKey()
     objects = SuggestionQuerySet.as_manager()
 
