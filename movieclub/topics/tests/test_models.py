@@ -13,11 +13,12 @@ class TopicTest(TestCase):
         User.objects.create(username='user3', password='user3@user')
 
     def setUp(self):
+        self.users = User.objects.all()
         self.t1 = Topic.objects.create(
             head='Brilliance of Dileesh Pothan',
             time=now(),
             description='something just like this',
-            created_by=User.objects.get(id=1),
+            created_by=self.users[0],
             tags='malayalam, maheshinte prathikaram',
         )
         self.t1.save()
@@ -25,16 +26,15 @@ class TopicTest(TestCase):
             head='Brilliance of Dileesh Pothan',
             time=now(),
             description='something just like this',
-            created_by=User.objects.get(id=2),
+            created_by=self.users[1],
             tags='malayalam, maheshinte prathikaram',
         )
 
     def test_follow_the_topic(self):
-        u = User.objects.get(id=2)
-        self.t1.follow_the_topic(u)
+        self.t1.follow_the_topic(self.users[1])
         a = self.t1.followers.all()
-        self.assertEqual(list(a), [u])
-        self.t1.un_follow_the_topic(u)
+        self.assertEqual(list(a), [self.users[1]])
+        self.t1.un_follow_the_topic(self.users[1])
         a = self.t1.followers.all()
         self.assertEqual(a.count(), 0)
 

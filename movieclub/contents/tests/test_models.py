@@ -7,37 +7,41 @@ from topics.models import Topic
 
 class AnswerTest(TestCase):
 
-    def setUp(self):
-        self.user1 = User.objects.create(username='user1', password='user1@user')
-        self.user2 = User.objects.create(username='user2', password='user1@user')
-        self.liked_u = User.objects.create(username='userl', password='user2@user')
-        self.disliked_u = User.objects.create(username='userd', password='user3@user')
-        self.topic_user = User.objects.create(username='usert', password='user4@user')
-        self.topic_user2 = User.objects.create(username='usert2', password='user4@user')
-        self.topic1 = Topic.objects.create(
+    @classmethod
+    def setUpTestData(cls):
+        User.objects.create(username='user1', password='user1@user')
+        User.objects.create(username='user2', password='user1@user')
+        User.objects.create(username='userl', password='user2@user')
+        User.objects.create(username='userd', password='user3@user')
+        User.objects.create(username='usert', password='user4@user')
+        User.objects.create(username='usert2', password='user4@user')
+        user = User.objects.all()
+        Topic.objects.create(
             head='interstellar decoding',
             time=now(),
-            created_by=self.topic_user,
+            created_by=user[0],
         )
-        self.topic2 = Topic.objects.create(
+        Topic.objects.create(
             head='memento decoding',
             time=now(),
-            created_by=self.topic_user,
+            created_by=user[0],
         )
+
+    def setUp(self):
+        self.user = User.objects.all()
+        self.topic = Topic.objects.all()
         self.b1 = Answer.objects.create(
             time=now(),
-            user=self.user1,
+            user=self.user[1],
             contents='this is just a begining',
-            topic=self.topic1,
+            topic=self.topic[0],
         )
         self.b2 = Answer.objects.create(
             time=now(),
-            user=self.user2,
+            user=self.user[2],
             contents='this is another begining',
-            topic=self.topic2,
+            topic=self.topic[1],
         )
-        self.b1.save()
-        self.b2.save()
 
     def test_content_watched(self):
         self.b1.content_watched()
@@ -45,35 +49,35 @@ class AnswerTest(TestCase):
         self.assertEqual(self.b2.watched, 0)
 
     def test_like_the_content(self):
-        self.b1.like_the_content(self.liked_u)
-        self.assertEqual(self.b1.liked.all()[0], self.liked_u)
+        self.b1.like_the_content(self.user[4])
+        self.assertEqual(self.b1.liked.all()[0], self.user[4])
 
     def test_dislike_the_content(self):
-        self.b2.dislike_the_content(self.disliked_u)
-        self.assertEqual(self.b2.disliked.all()[0], self.disliked_u)
+        self.b2.dislike_the_content(self.user[3])
+        self.assertEqual(self.b2.disliked.all()[0], self.user[3])
 
     def test_both_like_dislike(self):
-        self.b1.like_the_content(self.liked_u)
-        self.b1.dislike_the_content(self.liked_u)
-        self.assertEqual(self.b1.disliked.all()[0], self.liked_u)
+        self.b1.like_the_content(self.user[4])
+        self.b1.dislike_the_content(self.user[4])
+        self.assertEqual(self.b1.disliked.all()[0], self.user[4])
         self.assertEqual(self.b1.liked.all().count(), 0)
-        self.b2.dislike_the_content(self.disliked_u)
-        self.b2.like_the_content(self.disliked_u)
-        self.assertEqual(self.b2.liked.all()[0], self.disliked_u)
+        self.b2.dislike_the_content(self.user[3])
+        self.b2.like_the_content(self.user[3])
+        self.assertEqual(self.b2.liked.all()[0], self.user[3])
         self.assertEqual(self.b2.disliked.all().count(), 0)
 
     def test_get_liked(self):
-        self.b1.like_the_content(self.user1)
-        self.b1.like_the_content(self.user2)
+        self.b1.like_the_content(self.user[4])
+        self.b1.like_the_content(self.user[5])
         self.assertEqual(self.b1.get_likes(), 2)
-        self.b1.dislike_the_content(self.user2)
+        self.b1.dislike_the_content(self.user[5])
         self.assertEqual(self.b1.get_likes(), 1)
 
     def test_get_disliked(self):
-        self.b1.dislike_the_content(self.user1)
-        self.b1.dislike_the_content(self.user2)
+        self.b1.dislike_the_content(self.user[2])
+        self.b1.dislike_the_content(self.user[3])
         self.assertEqual(self.b1.get_dislike(), 2)
-        self.b1.like_the_content(self.user2)
+        self.b1.like_the_content(self.user[2])
         self.assertEqual(self.b1.get_dislike(), 1)
 
     def test_content(self):

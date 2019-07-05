@@ -39,6 +39,7 @@ class MovieQuerySet(models.query.QuerySet):
 
 
 class Genre(models.Model):
+    uuid_id = models.UUIDField(default=uuid.uuid4)
     name = models.CharField(max_length=20)
     thumbnail = models.ImageField(upload_to=upload_to, null=True, blank=True)
     followers = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True)
@@ -51,6 +52,7 @@ class Genre(models.Model):
 
 
 class Language(models.Model):
+    uuid_id = models.UUIDField(default=uuid.uuid4)
     name = models.CharField(max_length=20)
     followers = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True)
     thumbnail = models.ImageField(upload_to=upload_to, null=True, blank=True)

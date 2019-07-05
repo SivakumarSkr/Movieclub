@@ -55,11 +55,14 @@ class UserModelTest(TestCase):
             twitter='https://twitter.com',
             instagram='https://instagram.com',
         )
+        languages = Language.objects.all()
+        socails = SocialMedia.objects.all()
+        genre = Genre.objects.all()
         Star.objects.create(
             name='Lio jos pallissery',
             date_of_birth=datetime.datetime(1973, 2, 4),
             country='India',
-            social_media=SocialMedia.objects.get(id=1),
+            social_media=socails[0],
             biography='he is well known director in malayalam',
 
         )
@@ -67,7 +70,7 @@ class UserModelTest(TestCase):
             name='Dileesh pothan',
             date_of_birth=datetime.datetime(1969, 12, 12),
             country='India',
-            social_media=SocialMedia.objects.get(id=2),
+            social_media=socails[1],
             biography='he is well known director in malayalam',
 
         )
@@ -75,7 +78,7 @@ class UserModelTest(TestCase):
             name='Shyam pushkar',
             date_of_birth=datetime.datetime(1983, 1, 22),
             country='India',
-            social_media=SocialMedia.objects.get(id=3),
+            social_media=socails[2],
             biography='he is well known writer in malayalam',
 
         )
@@ -83,55 +86,56 @@ class UserModelTest(TestCase):
             name='Murali gopi',
             date_of_birth=datetime.datetime(1981, 11, 27),
             country='India',
-            social_media=SocialMedia.objects.get(id=4),
+            social_media=socails[3],
             biography='he is well known writer in malayalam',
         )
         Star.objects.create(
             name='Fahad fasil',
             date_of_birth=datetime.datetime(1984, 11, 27),
             country='India',
-            social_media=SocialMedia.objects.get(id=5),
+            social_media=socails[4],
             biography='he is well known writer in malayalam',
         )
         Star.objects.create(
             name='Prithviraj',
             date_of_birth=datetime.datetime(1983, 11, 27),
             country='India',
-            social_media=SocialMedia.objects.get(id=6),
+            social_media=socails[5],
             biography='he is well known actor in malayalam',
         )
+        stars = Star.objects.all()
         movie1 = Movie(
             name='Angamaly diaries',
             released_year=2017,
-            language=Language.objects.get(id=1),
+            language=languages[0],
             country='India',
-            director=Star.objects.get(id=1),
+            director=stars[0],
 
         )
-        movie1.save()
-        movie1.writers.add(Star.objects.get(id=3))
-        movie1.writers.add(Star.objects.get(id=4))
-        movie1.stars.add(Star.objects.get(id=5))
-        movie1.stars.add(Star.objects.get(id=6))
-        movie1.genre.add(Genre.objects.get(id=1))
-        movie1.genre.add(Genre.objects.get(id=2))
+        movie1.writers.add(stars[2])
+        movie1.writers.add(stars[3])
+        movie1.stars.add(stars[4])
+        movie1.stars.add(stars[5])
+        movie1.genre.add(genre[0])
+        movie1.genre.add(genre[1])
         movie1.save()
         movie2 = Movie(
             name='Sudani from Nigeria',
             released_year=2018,
-            language=Language.objects.get(id=1),
+            language=languages[0],
             country='India',
-            director=Star.objects.get(id=2),
+            director=stars[1],
         )
-        movie2.save()
-        movie2.writers.add(Star.objects.get(id=3))
-        movie2.writers.add(Star.objects.get(id=4))
-        movie2.stars.add(Star.objects.get(id=5))
-        movie2.stars.add(Star.objects.get(id=6))
-        movie2.genre.add(Genre.objects.get(id=1))
+        movie2.writers.add(stars[2])
+        movie2.writers.add(stars[3])
+        movie2.stars.add(stars[4])
+        movie2.stars.add(stars[5])
+        movie2.genre.add(genre[0])
         movie2.save()
 
     def setUp(self):
+        self.movies = Movie.objects.all()
+        self.stars = Star.objects.all()
         self.user1 = User.objects.create(username='user1', password='user1@user')
         self.user2 = User.objects.create(username='user2', password='user2@user')
         self.user3 = User.objects.create(username='user3', password='user3@user')
@@ -161,13 +165,13 @@ class UserModelTest(TestCase):
         self.r1 = Review.objects.create(
             user=self.user3,
             status='D',
-            movie=Movie.objects.all()[1],
+            movie=self.movies[1],
         )
 
         self.r2 = Review.objects.create(
             user=self.user3,
             status='D',
-            movie=Movie.objects.all()[0]
+            movie=self.movies[0]
         )
         self.a1 = Answer.objects.create(
             user=self.user2,
@@ -193,16 +197,16 @@ class UserModelTest(TestCase):
         self.g2.save()
 
         self.user1.watched_films.add(
-            Movie.objects.all()[0], Movie.objects.all()[1]
+            self.movies[0], self.movies[1]
         )
-        self.user3.following_stars.add(Star.objects.all()[2], Star.objects.all()[1])
-        Star.objects.all()[3].followers.add(self.user3)
+        self.user3.following_stars.add(self.stars[2], self.stars[1])
+        self.stars[3].followers.add(self.user3)
         self.user1.save()
 
         self.s1 = Suggestion.objects.create(
             sender=self.user1,
             receiver=self.user2,
-            content_object=Movie.objects.all()[1],
+            content_object=self.movies[1],
         )
         self.s2 = Suggestion.objects.create(
             sender=self.user3,
@@ -222,13 +226,13 @@ class UserModelTest(TestCase):
         self.r1p = Review.objects.create(
             user=self.user1,
             status='P',
-            movie=Movie.objects.all()[1],
+            movie=self.movies[1],
         )
 
         self.r2p = Review.objects.create(
             user=self.user1,
             status='P',
-            movie=Movie.objects.all()[0]
+            movie=self.movies[0]
         )
         self.a1p = Answer.objects.create(
             user=self.user3,
@@ -248,7 +252,7 @@ class UserModelTest(TestCase):
         self.assertEqual(self.user1.following.all().count(), 0)
         self.assertEqual(self.user2.followers.all().count(), 0)
 
-    def test_unfollow(self):
+    def test_un_follow(self):
         self.user1.follow(self.user2)
         self.user2.follow(self.user1)
         self.user2.unfollow(self.user1)

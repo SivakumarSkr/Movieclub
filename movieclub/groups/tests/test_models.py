@@ -44,5 +44,3 @@ class GroupTest(TestCase):
             User.objects.get(id=6)
         )
         self.g2.save()
-
-    # def test_

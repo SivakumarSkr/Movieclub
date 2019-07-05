@@ -46,11 +46,12 @@ class MovieTest(TestCase):
             twitter='https://twitter.com',
             instagram='https://instagram.com',
         )
+        social = SocialMedia.objects.all()
         Star.objects.create(
             name='Lio jos pallissery',
             date_of_birth=datetime.datetime(1973, 2, 4),
             country='India',
-            social_media=SocialMedia.objects.get(id=1),
+            social_media=social[0],
             biography='he is well known director in malayalam',
 
         )
@@ -58,7 +59,7 @@ class MovieTest(TestCase):
             name='Dileesh pothan',
             date_of_birth=datetime.datetime(1969, 12, 12),
             country='India',
-            social_media=SocialMedia.objects.get(id=2),
+            social_media=social[1],
             biography='he is well known director in malayalam',
 
         )
@@ -66,7 +67,7 @@ class MovieTest(TestCase):
             name='Shyam pushkar',
             date_of_birth=datetime.datetime(1983, 1, 22),
             country='India',
-            social_media=SocialMedia.objects.get(id=3),
+            social_media=social[2],
             biography='he is well known writer in malayalam',
 
         )
@@ -74,66 +75,66 @@ class MovieTest(TestCase):
             name='Murali gopi',
             date_of_birth=datetime.datetime(1981, 11, 27),
             country='India',
-            social_media=SocialMedia.objects.get(id=4),
+            social_media=social[3],
             biography='he is well known writer in malayalam',
         )
         Star.objects.create(
             name='Fahad fasil',
             date_of_birth=datetime.datetime(1984, 11, 27),
             country='India',
-            social_media=SocialMedia.objects.get(id=5),
+            social_media=social[4],
             biography='he is well known writer in malayalam',
         )
         Star.objects.create(
             name='Prithviraj',
             date_of_birth=datetime.datetime(1983, 11, 27),
             country='India',
-            social_media=SocialMedia.objects.get(id=6),
+            social_media=social[5],
             biography='he is well known actor in malayalam',
         )
 
     def setUp(self):
+        self.stars = Star.objects.all()
+        self.languages = Language.objects.all()
+        self.genre = Genre.objects.all()
         self.movie1 = Movie(
             name='Angamaly diaries',
             released_year=2017,
-            language=Language.objects.get(id=1),
+            language=self.languages[0],
             country='India',
-            director=Star.objects.get(id=1),
+            director=self.stars[0],
 
         )
-        self.movie1.save()
-        self.movie1.writers.add(Star.objects.get(id=3))
-        self.movie1.writers.add(Star.objects.get(id=4))
-        self.movie1.stars.add(Star.objects.get(id=5))
-        self.movie1.stars.add(Star.objects.get(id=6))
-        self.movie1.genre.add(Genre.objects.get(id=1))
-        self.movie1.genre.add(Genre.objects.get(id=2))
+        self.movie1.writers.add(self.stars[2])
+        self.movie1.writers.add(self.stars[3])
+        self.movie1.stars.add(self.stars[4])
+        self.movie1.stars.add(self.stars[5])
+        self.movie1.genre.add(self.genre[0])
+        self.movie1.genre.add(self.genre[1])
         self.movie1.save()
         self.movie2 = Movie(
             name='Sudani from Nigeria',
             released_year=2018,
-            language=Language.objects.get(id=1),
+            language=self.languages[0],
             country='India',
-            director=Star.objects.get(id=2),
+            director=self.stars[1],
         )
-        self.movie2.save()
-        self.movie2.writers.add(Star.objects.get(id=3))
-        self.movie2.writers.add(Star.objects.get(id=4))
-        self.movie2.stars.add(Star.objects.get(id=5))
-        self.movie2.stars.add(Star.objects.get(id=6))
-        self.movie2.genre.add(Genre.objects.get(id=1))
+        self.movie2.writers.add(self.stars[2])
+        self.movie2.writers.add(self.stars[3])
+        self.movie2.stars.add(self.stars[4])
+        self.movie2.stars.add(self.stars[5])
+        self.movie2.genre.add(self.genre[0])
         self.movie2.save()
         self.movie3 = Movie(
             name='ee ma yau',
             released_year=2018,
-            language=Language.objects.get(id=1),
+            language=self.languages[0],
             country='India',
-            director=Star.objects.get(id=1),
+            director=self.stars[0],
         )
-        self.movie3.save()
-        self.movie3.writers.add(Star.objects.get(id=3))
-        self.movie3.stars.add(Star.objects.get(id=5))
-        self.movie3.genre.add(Genre.objects.get(id=1))
+        self.movie3.writers.add(self.stars[2])
+        self.movie3.stars.add(self.stars[4])
+        self.movie3.genre.add(self.genre[0])
         self.movie3.save()
         self.r1 = Rating.objects.create(
             movie=self.movie1,
@@ -158,9 +159,9 @@ class MovieTest(TestCase):
         self.assertEqual(q.count(), 0)
 
     def test_get_by_director(self):
-        q = Movie.objects.get_by_director(Star.objects.get(id=1))
+        q = Movie.objects.get_by_director(self.stars[0])
         self.assertEqual(q.count(), 2)
-        q = Movie.objects.get_by_director(Star.objects.get(id=2))
+        q = Movie.objects.get_by_director(self.stars[1])
         self.assertEqual(list(q), [self.movie2])
 
     # def test_get_by_star(self):
@@ -170,7 +171,7 @@ class MovieTest(TestCase):
     #     self.assertEqual(list(q), [self.movie1, self.movie2])
 
     def test_get_by_language(self):
-        q = Movie.objects.get_by_language(Language.objects.get(id=1))
+        q = Movie.objects.get_by_language(self.languages[0])
         self.assertEqual(q.count(), 3)
 
     # def test_get_by_genre(self):
