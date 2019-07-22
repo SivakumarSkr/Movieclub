@@ -12,11 +12,11 @@ from django.utils.timesince import timesince
 # Create your models here.
 class NotificationQuerySet(models.query.QuerySet):
 
-    def get_unread(self):
-        return self.filter(unread=True)
+    def get_unread(self, receiver=None):
+        return self.filter(unread=True, receiver=receiver)
 
-    def get_read(self):
-        return self.filter(unread=False)
+    def get_read(self, receiver=None):
+        return self.filter(unread=False, receiver=receiver)
 
     def mark_all_as_read(self, receiver):
         qu_set = self.get_unread().filter(receiver=receiver)
@@ -25,7 +25,7 @@ class NotificationQuerySet(models.query.QuerySet):
     def get_latest(self, receiver):
         qu_set_unread = self.get_unread().filter(receiver=receiver)[:5]
         qu_set_read = self.get_read().filter(receiver=receiver)[:5]
-        return (qu_set_unread + qu_set_read)[:5]
+        return qu_set_unread | qu_set_read
 
 
 class Notification(models.Model):
@@ -57,8 +57,8 @@ class Notification(models.Model):
     uuid_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     category = models.CharField(max_length=1, choices=NOTIFICATION_TYPE)
     subject_content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE,
-                                             blank=True, null=True, related_name='subject')
-    subject_object_id = models.CharField(max_length=40, blank=True, null=True)
+                                             related_name='subject',)
+    subject_object_id = models.CharField(max_length=40)
     subject_object = GenericForeignKey('subject_content_type', 'subject_object_id')
     objects = NotificationQuerySet.as_manager()
 
@@ -72,8 +72,7 @@ class Notification(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = slugify('{} {} {}'.format(self.uuid_id, self.receiver, self.category),
-                                to_lower=True, max_length=200)
+            self.slug = slugify('{} {} {}'.format(self.uuid_id, self.receiver, self.category))
         super().save(*args, **kwargs)
 
     def time_since(self):
