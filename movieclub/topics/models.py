@@ -16,10 +16,10 @@ class TopicQuerySet(models.query.QuerySet):
         return self.order_by('-time')
 
     def get_trending(self):
-        return self.order_by('no_of_watches')
+        return self.order_by('-no_of_watches')
 
-    def get_most_followed(self):
-        pass
+    # def get_most_followed(self):
+    #     return sorted(self.all(), key=lambda x: x.get_followed_number())
 
 
 class Topic(models.Model):
@@ -57,3 +57,4 @@ class Topic(models.Model):
         if not self.slug:
             self.slug = slugify(f"{self.head} {self.time}", )
         super().save(*args, **kwargs)
+

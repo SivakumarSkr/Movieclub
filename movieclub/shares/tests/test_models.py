@@ -35,17 +35,17 @@ class ShareTest(TestCase):
         Comment.objects.create(
             user=self.users[1],
             text='just something',
-            post_object=self.share1,
+            content_object=self.share1,
         )
         Comment.objects.create(
             user=self.users[1],
             text='just something',
-            post_object=self.share1,
+            content_object=self.share1,
         )
         Comment.objects.create(
             user=self.users[2],
             text='just something',
-            post_object=self.share2,
+            content_object=self.share2,
         )
 
     def test_like_the_share(self):
@@ -53,8 +53,8 @@ class ShareTest(TestCase):
         self.share1.like_the_share(self.users[4])
         self.assertEqual(self.share1.liked.all().count(), 2)
 
-    # def test_get_comments(self):
-    #     a = self.share1.get_comments()
-    #     self.assertEqual(a.count(), 2)
-    #     b = self.share2.get_comments()
-    #     self.assertEqual(b.count(), 2)
+    def test_get_comments(self):
+        a = self.share1.get_comments()
+        self.assertEqual(a.count(), 2)
+        b = self.share2.get_comments()
+        self.assertEqual(b.count(), 1)

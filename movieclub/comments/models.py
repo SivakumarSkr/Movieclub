@@ -24,9 +24,9 @@ class Comment(models.Model):
     dislikes = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True,
                                       related_name='disliked_comments')
     image = models.ImageField(null=True, blank=True, upload_to='')
-    post_content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
-    post_content_object_id = models.CharField(max_length=40, blank=True)
-    post_object = GenericForeignKey('post_content_type', 'post_content_object_id')
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.CharField(max_length=40, blank=True)
+    content_object = GenericForeignKey()
     set_comments = GenericRelation('self')
 
     def like_the_comment(self, user):

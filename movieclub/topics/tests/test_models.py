@@ -21,7 +21,6 @@ class TopicTest(TestCase):
             created_by=self.users[0],
             tags='malayalam, maheshinte prathikaram',
         )
-        self.t1.save()
         self.t2 = Topic.objects.create(
             head='Brilliance of Dileesh Pothan',
             time=now(),
@@ -46,3 +45,16 @@ class TopicTest(TestCase):
     def test_get_latest(self):
         a = Topic.objects.get_latest_topics()
         self.assertEqual(list(a), [self.t2, self.t1])
+
+    def test_get_trending(self):
+        trend = Topic.objects.get_trending()
+        self.assertEqual(trend[0], self.t1)
+        self.t2.watched()
+        self.t2.watched()
+        self.t2.watched()
+        print(self.t2.no_of_watches)
+        trend = Topic.objects.get_trending()
+        self.assertEqual(trend[0], self.t2)
+
+    # def test_get_most_followed(self):
+    #     print(Topic.objects.get_most_followed())

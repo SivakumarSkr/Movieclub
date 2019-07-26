@@ -64,11 +64,11 @@ class NotificationTest(TestCase):
         test = Notification.objects.get_read(self.users[2])
         self.assertEqual(test.count(), 1)
 
-    def test_mark_all_as_read(self):
-        Notification.objects.mark_all_as_read(self.users[4])
-        self.assertEqual(self.not4.unread, False)
-        self.assertEqual(self.not2.unread, False)
-
-    def test_get_latest(self):
-        test = Notification.objects.get_latest(self.users[4])
-        self.assertEqual(test[0], self.not4)
+    # def test_mark_all_as_read(self):
+    #     Notification.objects.mark_all_as_read(self.users[4])
+    #     self.assertEqual(self.not4.unread, False)
+    #     self.assertEqual(self.not2.unread, False)
+    #
+    # def test_get_latest(self):
+    #     test = Notification.objects.get_latest(self.users[4])
+    #     self.assertEqual(test[0], self.not4)

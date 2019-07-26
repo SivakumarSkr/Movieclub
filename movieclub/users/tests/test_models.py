@@ -342,5 +342,6 @@ class UserModelTest(TestCase):
         a = self.user3.get_published_answer()
         self.assertEqual(a.count(), 2)
 
-    def test_something(self):
-        pass
+    def test_check_watched(self):
+        self.assertEqual(self.user1.check_watched(self.movies[0]), True)
+
