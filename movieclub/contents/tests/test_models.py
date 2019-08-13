@@ -1,6 +1,6 @@
 from django.test import TestCase
 from users.models import User
-from contents.models import Answer, Review
+from contents.models import Answer, Review, Blog
 from django.utils.timezone import now
 from topics.models import Topic
 
@@ -42,6 +42,12 @@ class AnswerTest(TestCase):
             contents='this is another begining',
             topic=self.topic[1],
         )
+        self.b3 = Blog.objects.create(
+            user=self.user[3],
+            status='P',
+            contents='this is another begging',
+            heading='just for horror',
+        )
 
     def test_content_watched(self):
         self.b1.content_watched()
@@ -82,3 +88,9 @@ class AnswerTest(TestCase):
 
     def test_content(self):
         self.assertEqual(self.b1.contents, 'this is just a begining')
+
+    def test_get_published(self):
+        query = Blog.objects.get_published()
+        self.assertEqual(query.count(), 1)
+        query = Answer.objects.get_drafts()
+        self.assertEqual(query.count(), 2)

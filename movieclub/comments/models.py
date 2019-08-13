@@ -17,7 +17,7 @@ class Comment(models.Model):
     uuid_id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
                              related_name='comments')
-    time = models.DateTimeField(default=now)
+    time = models.DateTimeField(default=now, editable=False)
     text = models.TextField()
     likes = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True,
                                    related_name='liked_comments')
@@ -28,6 +28,7 @@ class Comment(models.Model):
     object_id = models.CharField(max_length=40, blank=True)
     content_object = GenericForeignKey()
     set_comments = GenericRelation('self')
+    objects = CommentQuerySet()
 
     def like_the_comment(self, user):
         try:
@@ -50,4 +51,9 @@ class Comment(models.Model):
         return self.dislikes.count()
 
     def get_comments(self):
-        return self.set_comments.all(order_by='-time')
+        return self.set_comments
+
+    # def add_comment(self, obj):
+    #     self.content_object = obj
+    #     self.save()
+

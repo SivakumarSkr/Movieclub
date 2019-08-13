@@ -26,7 +26,7 @@ class Star(models.Model):
     photo = models.ImageField(upload_to='', default='', blank=True)
     social_media = models.OneToOneField(SocialMedia, on_delete=models.PROTECT,
                                         related_name='star', null=True)
-    biography = models.TextField()
+    biography = models.TextField(blank=True, null=True)
     objects = StarQuerySet.as_manager()
     followers = models.ManyToManyField(settings.AUTH_USER_MODEL,
                                        related_name='following_stars')

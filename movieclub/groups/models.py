@@ -58,6 +58,10 @@ class Group(models.Model):
     def check_closed(self):
         return self.type_of_group == 'C'
 
+    def add_admin(self, user):
+        self.admins.add(user)
+        self.save()
+
 
 class GroupBlog(Content):
     heading = models.CharField(max_length=300)

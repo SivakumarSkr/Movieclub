@@ -129,8 +129,8 @@ class Status(models.Model):
 
     )
     uuid_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    time = models.DateTimeField(default=now)
-    add_content = models.TextField()
+    time = models.DateTimeField(default=now, editable=False)
+    add_content = models.TextField(blank=True, null=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     action = models.CharField(max_length=1, choices=ACTION)
     image = models.ImageField(upload_to='status_images/%Y/%m/%d/', null=True)
