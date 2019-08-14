@@ -46,8 +46,8 @@ class Group(models.Model):
     def get_followers(self):
         return self.followers.all()
 
-    def get_follower(self):
-        return self.followers.all()
+    # def get_follower(self):
+    #     return self.followers.all()
 
     def get_admins(self):
         return self.admins.all()

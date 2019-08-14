@@ -272,3 +272,6 @@ fabric.properties
 # Pyre type checker
 
 # End of https://www.gitignore.io/api/django,python,pycharm
+movieclub/comments/migrations/0005_auto_20190814_1315.py
+movieclub/contents/migrations/0003_auto_20190814_1315.py
+movieclub/persons/migrations/0003_auto_20190814_1315.py
