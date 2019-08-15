@@ -94,3 +94,6 @@ class AnswerTest(TestCase):
         self.assertEqual(query.count(), 1)
         query = Answer.objects.get_drafts()
         self.assertEqual(query.count(), 2)
+
+    def test_markdown(self):
+        self.assertEqual(self.b1.get_markdown(), '<p>this is just a begining</p>')

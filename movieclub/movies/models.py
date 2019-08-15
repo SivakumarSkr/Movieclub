@@ -47,6 +47,10 @@ class Genre(models.Model):
     def __str__(self):
         return self.name
 
+    def follow(self, user):
+        self.followers.add(user)
+        self.save()
+
     def check_following(self, user):
         return user in self.followers.all()
 
@@ -62,6 +66,10 @@ class Language(models.Model):
 
     def check_following(self, user):
         return user in self.followers.all()
+
+    def follow(self, user):
+        self.followers.add(user)
+        self.save()
 
 
 class Movie(models.Model):

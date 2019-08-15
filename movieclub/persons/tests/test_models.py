@@ -35,18 +35,27 @@ class PersonTest(TestCase):
         self.user = User.objects.all()
         self.star1 = Star.objects.create(
             name='Lijo jose pallissery',
-            date_of_birth=datetime.datetime,
+            date_of_birth=datetime.datetime(1995, 6, 1),
             country='indian',
             social_media=self.social[0],
             biography='He is good film director',
         )
         self.star2 = Star.objects.create(
             name='Lijo jose pallissery',
-            date_of_birth='23-4-1978',
+            date_of_birth=datetime.datetime(1992, 6, 1),
             country='indian',
             social_media=self.social[1],
             biography='jsdfalkjfdsa',
         )
 
-    # def test_get_age(self):
-    #     self.assertEqual(self.star1.get_age(), 41)
+    def test_get_age(self):
+        self.assertEqual(self.star1.get_age, 24)
+
+    def test_follow(self):
+        self.star1.follow(self.user[0])
+        self.star1.follow(self.user[1])
+        self.assertEqual(self.star1.get_followers().count(), 2)
+        self.assertEqual(self.star1.check_following(self.user[0]), True)
+        self.assertEqual(self.star1.check_following(self.user[2]), False)
+        self.star1.un_follow(self.user[0])
+        self.assertEqual(self.star1.check_following(self.user[0]), False)

@@ -155,8 +155,8 @@ class MovieTest(TestCase):
     def test_get_by_year(self):
         q = Movie.objects.get_by_year(2018)
         self.assertEqual(q.count(), 2)
-        q = Movie.objects.get_by_year(2016)
-        self.assertEqual(q.count(), 0)
+        q = Movie.objects.get_by_year(1899)
+        self.assertEqual(q, None)
 
     def test_get_by_director(self):
         q = Movie.objects.get_by_director(self.stars[0])
@@ -173,6 +173,9 @@ class MovieTest(TestCase):
     def test_get_by_language(self):
         q = Movie.objects.get_by_language(self.languages[0])
         self.assertEqual(q.count(), 3)
+
+    def test_genre(self):
+        self.assertEqual(str(self.genre[0]), 'comedy')
 
     # def test_get_by_genre(self):
     #     q = Movie.objects.get_by_genre(Genre.objects.get(id=1))

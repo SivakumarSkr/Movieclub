@@ -38,13 +38,20 @@ class Star(models.Model):
         return current - dob
 
     def follow(self, user):
-        self.followers.add(user)
-        self.save()
+        if not self.check_following(user):
+            self.followers.add(user)
+            self.save()
 
     def un_follow(self, user):
-        self.followers.remove(user)
-        self.save()
+        if self.check_following(user):
+            self.followers.remove(user)
+            self.save()
 
     def check_following(self, user):
         return user in self.followers.all()
+
+    def get_followers(self):
+        return self.followers.all()
+
+    # add get followers who follows user
 

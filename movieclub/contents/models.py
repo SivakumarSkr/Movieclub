@@ -76,7 +76,7 @@ class Content(models.Model):
         return self.disliked.count()
 
     def get_markdown(self):
-        return markdownify(self.content)
+        return markdownify(self.contents)
 
 
 class Answer(Content):
