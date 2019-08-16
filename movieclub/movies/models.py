@@ -37,6 +37,9 @@ class MovieQuerySet(models.query.QuerySet):
     def get_by_language(self, language=None):
         return self.filter(language=language)
 
+    def get_by_genre(self, genre):
+        return self.filter(genre=genre)
+
 
 class Genre(models.Model):
     uuid_id = models.UUIDField(default=uuid.uuid4)
@@ -48,8 +51,14 @@ class Genre(models.Model):
         return self.name
 
     def follow(self, user):
-        self.followers.add(user)
-        self.save()
+        if not self.check_following(user):
+            self.followers.add(user)
+            self.save()
+
+    def un_follow(self, user):
+        if self.check_following(user):
+            self.followers.remove(user)
+            self.save()
 
     def check_following(self, user):
         return user in self.followers.all()
@@ -68,8 +77,14 @@ class Language(models.Model):
         return user in self.followers.all()
 
     def follow(self, user):
-        self.followers.add(user)
-        self.save()
+        if not self.check_following(user):
+            self.followers.add(user)
+            self.save()
+
+    def un_follow(self, user):
+        if self.check_following(user):
+            self.followers.remove(user)
+            self.save()
 
 
 class Movie(models.Model):

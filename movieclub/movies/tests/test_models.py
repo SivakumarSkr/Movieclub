@@ -94,6 +94,7 @@ class MovieTest(TestCase):
         )
 
     def setUp(self):
+        self.user = User.objects.all()
         self.stars = Star.objects.all()
         self.languages = Language.objects.all()
         self.genre = Genre.objects.all()
@@ -138,17 +139,17 @@ class MovieTest(TestCase):
         self.movie3.save()
         self.r1 = Rating.objects.create(
             movie=self.movie1,
-            user=User.objects.get(id=1),
+            user=self.user[0],
             rate=9,
         )
         self.r2 = Rating.objects.create(
             movie=self.movie1,
-            user=User.objects.get(id=2),
+            user=self.user[1],
             rate=8,
         )
         self.r3 = Rating.objects.create(
             movie=self.movie1,
-            user=User.objects.get(id=3),
+            user=self.user[2],
             rate=10,
         )
 
@@ -174,14 +175,29 @@ class MovieTest(TestCase):
         q = Movie.objects.get_by_language(self.languages[0])
         self.assertEqual(q.count(), 3)
 
+    def test_language(self):
+        self.assertEqual(str(self.languages[0]), 'malayalam')
+        self.languages[0].follow(self.user[1])
+        self.languages[0].follow(self.user[2])
+        self.assertEqual(self.languages[0].check_following(self.user[1]), True)
+        self.assertEqual(self.languages[0].check_following(self.user[0]), False)
+        self.languages[0].un_follow(self.user[1])
+        self.assertEqual(self.languages[0].check_following(self.user[1]), False)
+
     def test_genre(self):
         self.assertEqual(str(self.genre[0]), 'comedy')
+        self.genre[0].follow(self.user[1])
+        self.genre[0].follow(self.user[2])
+        self.assertEqual(self.genre[0].check_following(self.user[1]), True)
+        self.assertEqual(self.genre[0].check_following(self.user[0]), False)
+        self.genre[0].un_follow(self.user[1])
+        self.assertEqual(self.genre[0].check_following(self.user[1]), False)
 
-    # def test_get_by_genre(self):
-    #     q = Movie.objects.get_by_genre(Genre.objects.get(id=1))
-    #     self.assertEqual(q.count(), 3)
-    #     q = Movie.objects.get_by_genre(Genre.objects.get(id=2))
-    #     self.assertEqual(list(q), [self.movie1])
+    def test_get_by_genre(self):
+        q = Movie.objects.get_by_genre(self.genre[0])
+        self.assertEqual(q.count(), 3)
+        q = Movie.objects.get_by_genre(self.genre[1])
+        self.assertEqual(list(q), [self.movie1])
 
     # def test_get_by_writer(self):
     #     q = Movie.objects.get_by_writer(Star.objects.get(id=3))
@@ -191,3 +207,9 @@ class MovieTest(TestCase):
 
     def test_rate(self):
         self.assertEqual(self.movie1.rating, 9)
+
+    def test_movie(self):
+        self.assertEqual(str(self.movie1), 'Angamaly diaries')
+        self.assertEqual(self.movie1.get_stars().count(), 2)
+        self.assertEqual(self.movie1.get_writers().count(), 2)
+
