@@ -1,19 +1,20 @@
+from django.contrib.auth import get_user_model
 from django.test import TestCase
-
-from users.models import User
-
+# from users.models import User
 from groups.models import Group, GroupBlog
+
+User = get_user_model()
 
 
 class GroupTest(TestCase):
     @classmethod
     def setUpTestData(cls):
-        User.objects.create(username='user1', password='user1@123')
-        User.objects.create(username='user2', password='user2@123')
-        User.objects.create(username='user3', password='user1@123')
-        User.objects.create(username='user4', password='user2@123')
-        User.objects.create(username='user5', password='user1@123')
-        User.objects.create(username='user6', password='user2@123')
+        User.objects.create(email='user1@gmail.com', password='user1@123')
+        User.objects.create(email='user2@gmail.com', password='user2@123')
+        User.objects.create(email='user3@gmail.com', password='user1@123')
+        User.objects.create(email='user4@gmail.com', password='user2@123')
+        User.objects.create(email='user5@gmail.com', password='user1@123')
+        User.objects.create(email='user6@gmail.com', password='user2@123')
 
     def setUp(self):
         self.user = User.objects.all()
@@ -73,7 +74,3 @@ class GroupTest(TestCase):
 
     def test_blog_heading(self):
         self.assertEqual(str(self.gb1), 'heading')
-
-
-
-

@@ -1,17 +1,19 @@
 import datetime
 
+from django.contrib.auth import get_user_model
 from django.test import TestCase
 from movies.models import Genre, Language, Movie, Rating
-from users.models import User
 from persons.models import Star, SocialMedia
+
+User = get_user_model()
 
 
 class MovieTest(TestCase):
     @classmethod
     def setUpTestData(cls):
-        User.objects.create(username='user1', password='user1@user')
-        User.objects.create(username='user2', password='user2@user')
-        User.objects.create(username='user3', password='user3@user')
+        User.objects.create(email='user1@gmail.com', password='user1@user')
+        User.objects.create(email='user2@gmail.com', password='user2@user')
+        User.objects.create(email='user3@gmail.com', password='user3@user')
         Genre.objects.create(name='comedy')
         Genre.objects.create(name='thriller')
         Language.objects.create(name='malayalam')
@@ -212,4 +214,3 @@ class MovieTest(TestCase):
         self.assertEqual(str(self.movie1), 'Angamaly diaries')
         self.assertEqual(self.movie1.get_stars().count(), 2)
         self.assertEqual(self.movie1.get_writers().count(), 2)
-

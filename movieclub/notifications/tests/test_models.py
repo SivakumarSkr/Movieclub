@@ -11,11 +11,11 @@ class NotificationTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        User.objects.create(username='user1', password='user4')
-        User.objects.create(username='user2', password='user4')
-        User.objects.create(username='user3', password='user4')
-        User.objects.create(username='user4', password='user4')
-        User.objects.create(username='user5', password='user4')
+        User.objects.create(email='user1@gmail.com', password='user4')
+        User.objects.create(email='user2@gmail.com', password='user4')
+        User.objects.create(email='user3@gmail.com', password='user4')
+        User.objects.create(email='user4@gmail.com', password='user4')
+        User.objects.create(email='user5@gmail.com', password='user4')
         users = User.objects.all()
         Blog.objects.create(
             user=users[0],

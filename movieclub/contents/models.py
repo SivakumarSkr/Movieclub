@@ -106,7 +106,7 @@ class Review(Content):
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify("{}'s review on {} {}".format(
-                self.user.username, self.movie.name, self.movie.released_year))
+                self.user.email, self.movie.name, self.movie.released_year))
         super().save(*args, **kwargs)
 
 

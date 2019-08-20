@@ -1,16 +1,19 @@
+from django.contrib.auth import get_user_model
 from django.test import TestCase
-from users.models import User
+# from users.models import User
 from topics.models import Topic
 from django.utils.timezone import now
+
+User = get_user_model()
 
 
 class TopicTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        User.objects.create(username='user1', password='user1@user')
-        User.objects.create(username='user2', password='user2@user')
-        User.objects.create(username='user3', password='user3@user')
+        User.objects.create(email='user1@gmail.com', password='user1@user')
+        User.objects.create(email='user2@gmail.com', password='user2@user')
+        User.objects.create(email='user3@gmail.com', password='user3@user')
 
     def setUp(self):
         self.users = User.objects.all()

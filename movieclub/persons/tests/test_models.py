@@ -13,9 +13,9 @@ class PersonTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        User.objects.create(username='user2', password='user4')
-        User.objects.create(username='user4', password='user4')
-        User.objects.create(username='user6', password='user4')
+        User.objects.create(email='user1@gmail.com', password='user4')
+        User.objects.create(email='user2@gmail.com', password='user4')
+        User.objects.create(email='user3@gmail.com', password='user4')
         Language.objects.create(name='English')
         Genre.objects.create(name='Thriller')
         Genre.objects.create(name='Sci-fi')

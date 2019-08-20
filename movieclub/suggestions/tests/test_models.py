@@ -1,20 +1,24 @@
 import datetime
 import os
+
+from django.contrib.auth import get_user_model
 from django.test import TestCase
-from users.models import User
+# from users.models import User
 from movies.models import Movie, Language, Genre
 from persons.models import Star, SocialMedia
 from suggestions.models import Suggestion
+
+User = get_user_model()
 
 
 class SuggestionTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        User.objects.create(username='user1', password='user1@user1')
-        User.objects.create(username='user2', password='user2@user2')
-        User.objects.create(username='user3', password='user2@user3')
-        User.objects.create(username='user4', password='user2@user4')
+        User.objects.create(email='user1@gmail.com', password='user1@user1')
+        User.objects.create(email='user2@gmail.com', password='user2@user2')
+        User.objects.create(email='user3@gmail.com', password='user2@user3')
+        User.objects.create(email='user4@gmail.com', password='user2@user4')
         Language.objects.create(name='English')
         Genre.objects.create(name='Thriller')
         Genre.objects.create(name='Sci-fi')
@@ -90,6 +94,3 @@ class SuggestionTest(TestCase):
         b = Suggestion.objects.get_suggestions_as_receiver(self.users[1])
         self.assertEqual(a.count(), 0)
         self.assertEqual(b.count(), 2)
-
-
-

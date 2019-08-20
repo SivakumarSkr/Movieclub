@@ -1,20 +1,22 @@
+from django.contrib.auth import get_user_model
 from django.test import TestCase
-from users.models import User
 from contents.models import Answer, Review, Blog
 from django.utils.timezone import now
 from topics.models import Topic
+
+User = get_user_model()
 
 
 class AnswerTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        User.objects.create(username='user1', password='user1@user')
-        User.objects.create(username='user2', password='user1@user')
-        User.objects.create(username='userl', password='user2@user')
-        User.objects.create(username='userd', password='user3@user')
-        User.objects.create(username='usert', password='user4@user')
-        User.objects.create(username='usert2', password='user4@user')
+        User.objects.create(email='user1@gmail.com', password='user1@user')
+        User.objects.create(email='user2@gmail.com', password='user1@user')
+        User.objects.create(email='user3@gmail.com', password='user2@user')
+        User.objects.create(email='user4@gmail.com', password='user3@user')
+        User.objects.create(email='user5@gmail.com', password='user4@user')
+        User.objects.create(email='user6@gmail.com', password='user4@user')
         user = User.objects.all()
         Topic.objects.create(
             head='interstellar decoding',

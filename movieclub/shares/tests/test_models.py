@@ -1,20 +1,23 @@
+from django.contrib.auth import get_user_model
 from django.test import TestCase
-from users.models import User
+# from users.models import User
 from contents.models import Blog
 from comments.models import Comment
 from shares.models import Share
+
+User = get_user_model()
 
 
 class ShareTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        User.objects.create(username='user@1', password='user2')
-        User.objects.create(username='user@2', password='user2')
-        User.objects.create(username='user@3', password='user2')
-        User.objects.create(username='user@4', password='user2')
-        User.objects.create(username='user@5', password='user2')
-        User.objects.create(username='user@6', password='user2')
+        User.objects.create(email='user1@gmail.com', password='user2')
+        User.objects.create(email='user2@gmail.com', password='user2')
+        User.objects.create(email='user3@gmail.com', password='user2')
+        User.objects.create(email='user4@gmail.com', password='user2')
+        User.objects.create(email='user5@gmail.com', password='user2')
+        User.objects.create(email='user6@gmail.com', password='user2')
         users = User.objects.all()
         Blog.objects.create(
             user=users[0],

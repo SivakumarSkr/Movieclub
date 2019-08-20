@@ -1,8 +1,9 @@
 import datetime
 
+from django.contrib.auth import get_user_model
 from django.test import TestCase
-from users.models import User
-import pytest
+# from users.models import User
+
 from topics.models import Topic
 
 from contents.models import Blog
@@ -16,6 +17,8 @@ from contents.models import Answer
 from groups.models import Group
 
 from suggestions.models import Suggestion
+
+User = get_user_model()
 
 
 class UserModelTest(TestCase):
@@ -136,9 +139,9 @@ class UserModelTest(TestCase):
     def setUp(self):
         self.movies = Movie.objects.all()
         self.stars = Star.objects.all()
-        self.user1 = User.objects.create(username='user1', password='user1@user')
-        self.user2 = User.objects.create(username='user2', password='user2@user')
-        self.user3 = User.objects.create(username='user3', password='user3@user')
+        self.user1 = User.objects.create(email='user1@gmail.com', password='user1@user')
+        self.user2 = User.objects.create(email='user2@gmail.com', password='user2@user')
+        self.user3 = User.objects.create(email='user3@gmail.com', password='user3@user')
         self.t1 = Topic.objects.create(
             head='brilliance of dileesh',
             created_by=self.user1,
@@ -255,7 +258,7 @@ class UserModelTest(TestCase):
     def test_un_follow(self):
         self.user1.follow(self.user2)
         self.user2.follow(self.user1)
-        self.user2.unfollow(self.user1)
+        self.user2.un_follow(self.user1)
         self.assertEqual(list(self.user1.followers.all()), [self.user2])
         self.assertEqual(list(self.user2.following.all()), [self.user1])
         self.assertEqual(self.user1.following.all().count(), 0)
@@ -344,4 +347,3 @@ class UserModelTest(TestCase):
 
     def test_check_watched(self):
         self.assertEqual(self.user1.check_watched(self.movies[0]), True)
-

@@ -1,5 +1,6 @@
 import uuid
 
+from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator
@@ -9,8 +10,11 @@ from django.dispatch import receiver
 from django.conf import settings
 from persons.models import Star
 from suggestions.models import Suggestion
+
 # Create your models here.
-from users.models import User
+# from users.models import User
+
+User = get_user_model()
 
 
 def upload_to_movies(instance, filename):
