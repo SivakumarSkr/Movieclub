@@ -7,3 +7,4 @@ class ShareSerializer(ModelSerializer):
     class Meta:
         model = Share
         fields = ('time', 'user', 'liked', 'share_content_type', 'sharing_object')
+        read_only_fields = ('time', 'user', 'liked', 'share_content_type', 'sharing_object')

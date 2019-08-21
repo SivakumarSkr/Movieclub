@@ -26,7 +26,7 @@ class Topic(models.Model):
     uuid_id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False)
     head = models.CharField(max_length=500)
     time = models.DateTimeField(default=now, editable=False)
-    description = models.TextField(null=True)
+    description = models.TextField(null=True, blank=True)
     slug = models.SlugField(max_length=300, null=True, blank=True)
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
                                    related_name='topics')
