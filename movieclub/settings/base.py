@@ -25,11 +25,16 @@ DEFAULT_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
 ]
 THIRD_PARTY_APPS = [
     'django_extensions',
     'taggit',
     'markdownx',
+    'rest_framework',
+    'rest_framework.authtoken',
+
+
 ]
 
 INSTALLED_APPS = LOCAL_APPS + DEFAULT_APPS + THIRD_PARTY_APPS
@@ -71,3 +76,4 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
+
