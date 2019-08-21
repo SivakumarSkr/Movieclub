@@ -11,7 +11,7 @@ User = get_user_model()
 class MovieTest(TestCase):
     @classmethod
     def setUpTestData(cls):
-        User.objects.create(email='user1@gmail.com', password='user1@user')
+        User.objects.create(email='user1@gmail.com', PASSWORD='user1@user')
         User.objects.create(email='user2@gmail.com', password='user2@user')
         User.objects.create(email='user3@gmail.com', password='user3@user')
         Genre.objects.create(name='comedy')
