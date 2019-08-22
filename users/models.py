@@ -41,13 +41,15 @@ class User(AbstractBaseUser, PermissionsMixin):
     last_name = models.CharField(_('last name'), max_length=30, blank=True)
     date_joined = models.DateTimeField(_('date joined'), auto_now_add=True)
     is_active = models.BooleanField(_('active'), default=True)
+    is_staff = models.BooleanField(default=True)
     avatar = models.ImageField(upload_to='avatars/', null=True, blank=True)
     date_of_birth = models.DateField(null=True)
     contact_no = PhoneNumberField(null=True)
     place = models.CharField(max_length=20, null=True)
     followers = models.ManyToManyField('self', symmetrical=False,
-                                       related_name='following')
+                                       related_name='following', blank=True)
     watched_films = models.ManyToManyField('movies.Movie', blank=True)
+    last_login = models.DateTimeField(auto_now=True)
     objects = UserManager()
 
     USERNAME_FIELD = 'email'
@@ -133,4 +135,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def get_suggestions_received(self):
         return self.suggest_receiver.order_by('-time')
+
+    def get_suggestions_sent(self):
+        return self.suggest_sender.order_by('-time')
 
