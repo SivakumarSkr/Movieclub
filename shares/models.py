@@ -13,6 +13,7 @@ class Share(models.Model):
     time = models.DateTimeField(default=now)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
                              related_name='shares')
+    description = models.TextField(null=True, blank=True)
     liked = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='shares_liked')
     share_content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     share_content_object_id = models.CharField(max_length=40, null=True, blank=True)
