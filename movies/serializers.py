@@ -10,7 +10,7 @@ class GenreSerializer(ModelSerializer):
         fields = ('name', 'thumbnail')
 
 
-class LanguageSerializer():
+class LanguageSerializer(ModelSerializer):
 
     class Meta:
         model = Language

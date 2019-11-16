@@ -7,4 +7,4 @@ class StarSerializer(ModelSerializer):
     class Meta:
         model = Star
         fields = ('name', 'date_of_birth', 'country', 'photo', 'biography', 'followers')
-        read_only_fields = ('followers', )
+        # read_only_fields = ('followers', )

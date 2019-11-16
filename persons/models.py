@@ -28,6 +28,8 @@ class Star(models.Model):
                                         related_name='star', null=True)
     biography = models.TextField(blank=True, null=True)
     objects = StarQuerySet.as_manager()
+    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, related_name='created_stars')
+    updated_by = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='updated_stars')
     followers = models.ManyToManyField(settings.AUTH_USER_MODEL,
                                        related_name='following_stars')
 
