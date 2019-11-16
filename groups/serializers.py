@@ -10,15 +10,19 @@ class GroupSerializer(ModelSerializer):
 
     class Meta:
         model = Group
-        fields = ('uuid_id', 'name', 'time_created', 'type_of_group', 'creator', 'description')
-        read_only_fields = ('uuid_id', 'time_created', 'creator', 'type_of_group')
+        fields = ('uuid_id', 'name', 'time_created',
+                  'type_of_group', 'creator', 'description')
+        read_only_fields = ('uuid_id', 'time_created',
+                            'creator', 'type_of_group')
 
 
 class ClosedGroupSerializer(ModelSerializer):
     class Meta:
         model = ClosedGroup
-        fields = ('uuid_id', 'name', 'time_created', 'type_of_group', 'creator', 'admins', 'description')
-        read_only_fields = ('uuid_id', 'time_created', 'creator', 'type_of_group', 'admins')
+        fields = ('uuid_id', 'name', 'time_created', 'type_of_group',
+                  'creator', 'admins', 'description')
+        read_only_fields = ('uuid_id', 'time_created',
+                            'creator', 'type_of_group', 'admins')
 
 
 class TagSerializerField(serializers.ListField):
@@ -30,8 +34,6 @@ class TagSerializerField(serializers.ListField):
 
 class GroupBlogSerializer(TaggitSerializer, ModelSerializer):
     """ Serializer for Group Blog"""
-
-    # tags = TagListSerializerField()
 
     class Meta:
         model = GroupBlog

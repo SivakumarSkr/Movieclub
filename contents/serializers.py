@@ -7,7 +7,7 @@ class BlogSerializer(ModelSerializer):
     """Serializer for Blog"""
     class Meta:
         model = Blog
-        fields = ('tags', 'contents', 'image', 'heading')
+        fields = ('heading', 'contents', 'image')
 
 
 class AnswerSerializer(ModelSerializer):
@@ -15,14 +15,14 @@ class AnswerSerializer(ModelSerializer):
 
     class Meta:
         model = Answer
-        fields = ('tags', 'contents', 'image')
+        fields = ('topic', 'contents', 'image')
 
 
 class ReviewSerializer(ModelSerializer):
 
     class Meta:
         model = Review
-        fields = ('tags', 'contents', 'image', 'spoiler_alert')
+        fields = ('contents', 'image', 'spoiler_alert', 'movie')
 
 
 class StatusSerializer(ModelSerializer):

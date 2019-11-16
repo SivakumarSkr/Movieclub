@@ -109,6 +109,8 @@ class Movie(models.Model):
     stars = models.ManyToManyField(Star, related_name='movies_star')
     thumbnail = models.ImageField(upload_to=upload_to_movies, null=True)
     suggestions = GenericRelation(Suggestion, related_query_name='movie_suggestion')
+    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, related_name='created_movies')
+    updated_by = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='updated_movies')
     objects = MovieQuerySet.as_manager()
 
     def __str__(self):
