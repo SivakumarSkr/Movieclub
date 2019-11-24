@@ -6,7 +6,7 @@ class Permission(BasePermission):
         if request.method in SAFE_METHODS:
             return True
         else:
-            var = request.self.user.is_prime
+            var = request.user.is_prime
             return var
 
 

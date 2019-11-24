@@ -1,9 +1,9 @@
-from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
-from django.contrib.auth.models import AbstractUser, PermissionsMixin
+from django.contrib.auth.base_user import BaseUserManager
+from django.contrib.auth.models import AbstractUser
 from django.core.mail import send_mail
 from django.db import models
-from phonenumber_field.modelfields import PhoneNumberField
 from django.utils.translation import ugettext_lazy as _
+from phonenumber_field.modelfields import PhoneNumberField
 
 
 # Create your models here.
@@ -35,13 +35,7 @@ class UserManager(BaseUserManager):
         return self._create_user(email, password, **extra_fields)
 
 
-class User(AbstractBaseUser, PermissionsMixin):
-    email = models.EmailField(_('email'), unique=True)
-    first_name = models.CharField(_('first name'), max_length=30)
-    last_name = models.CharField(_('last name'), max_length=30, blank=True)
-    date_joined = models.DateTimeField(_('date joined'), auto_now_add=True)
-    is_active = models.BooleanField(_('active'), default=True)
-    is_staff = models.BooleanField(default=True)
+class User(AbstractUser):
     is_prime = models.BooleanField(default=False)
     avatar = models.ImageField(upload_to='avatars/', null=True, blank=True)
     date_of_birth = models.DateField(null=True)
@@ -50,11 +44,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     followers = models.ManyToManyField('self', symmetrical=False,
                                        related_name='following', blank=True)
     watched_films = models.ManyToManyField('movies.Movie', blank=True)
-    last_login = models.DateTimeField(auto_now=True)
     objects = UserManager()
-
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = []
 
     class Meta:
         verbose_name = _('user')

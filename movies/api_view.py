@@ -1,5 +1,8 @@
+from rest_framework import status
 from rest_framework.authentication import TokenAuthentication
+from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from movies.models import Movie, Language, Genre, Rating
@@ -20,22 +23,34 @@ class MovieViewSet(ModelViewSet):
 class LanguageViewSet(ModelViewSet):
     serializer_class = LanguageSerializer
     permission_classes = (Permission,)
-    authentication_classes = [TokenAuthentication]
+    # authentication_classes = [TokenAuthentication]
     queryset = Language.objects.all()
 
     def perform_create(self, serializer):
         serializer.save()
 
+    @action(detail=False, methods=['put'], url_path='follow/(?P<pk>[^/.]+)', name='follow_language')
+    def follow_language(self, request, pk=None):
+        language = Language.objects.get(pk=pk)
+        language.follow(request.user)
+        return Response(status=status.HTTP_202_ACCEPTED)
+
 
 class GenreViewSet(ModelViewSet):
     serializer_class = GenreSerializer
     permission_classes = (Permission,)
-    authentication_classes = [TokenAuthentication]
+    # authentication_classes = [TokenAuthentication]
     queryset = Genre.objects.all()
     search_fields = ('name', 'released_year', 'country', 'director__name', 'language__name', 'stars__name')
 
     def perform_create(self, serializer):
         serializer.save()
+
+    @action(detail=False, methods=['put'], url_path='follow/(?P<pk>[^/.]+)', name='follow_genre')
+    def follow_genre(self, request, pk=None):
+        genre = Genre.objects.get(pk=pk)
+        genre.follow(request.user)
+        return Response(data='Now you following '.format(self.name), status=status.HTTP_202_ACCEPTED)
 
 
 class RatingViewSet(ModelViewSet):
