@@ -31,7 +31,7 @@ class Star(models.Model):
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, related_name='created_stars')
     updated_by = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='updated_stars')
     followers = models.ManyToManyField(settings.AUTH_USER_MODEL,
-                                       related_name='following_stars')
+                                       related_name='following_stars', blank=True)
 
     @property
     def get_age(self):
@@ -55,5 +55,7 @@ class Star(models.Model):
     def get_followers(self):
         return self.followers.all()
 
+    def __str__(self):
+        return self.name
     # add get followers who follows user
 
