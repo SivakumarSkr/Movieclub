@@ -15,18 +15,21 @@ class AnswerSerializer(ModelSerializer):
 
     class Meta:
         model = Answer
-        fields = ('topic', 'contents', 'image')
+        fields = ('pk', 'topic', 'contents', 'image')
+        readonly_fields = ('pk', 'user')
 
 
 class ReviewSerializer(ModelSerializer):
 
     class Meta:
         model = Review
-        fields = ('contents', 'image', 'spoiler_alert', 'movie')
+        fields = ('pk', 'contents', 'image', 'spoiler_alert', 'movie')
+        readonly_fields = ('pk', 'user')
 
 
 class StatusSerializer(ModelSerializer):
 
     class Meta:
         model = Status
-        fields = ('content', 'action', 'image')
+        fields = ('pk', 'content', 'action', 'image')
+        readonly_fields = ('pk', 'user')

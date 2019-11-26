@@ -35,6 +35,7 @@ THIRD_PARTY_APPS = [
     'rest_framework.authtoken',
     'django_filters',
     'taggit_serializer',
+    'generic_relations',
 ]
 
 INSTALLED_APPS = LOCAL_APPS + DEFAULT_APPS + THIRD_PARTY_APPS
