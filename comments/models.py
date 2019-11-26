@@ -4,7 +4,6 @@ from django.conf import settings
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
-
 # Create your models here.
 from django.utils.timezone import now
 
@@ -29,6 +28,9 @@ class Comment(models.Model):
     content_object = GenericForeignKey()
     set_comments = GenericRelation('self')
     objects = CommentQuerySet()
+
+    class Meta:
+        ordering = ('-time',)
 
     def like_the_comment(self, user):
         try:

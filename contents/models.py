@@ -2,15 +2,15 @@ import uuid
 
 from django.conf import settings
 from django.contrib.contenttypes.fields import GenericRelation
-from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.utils.text import slugify
 from django.utils.timezone import now
-from topics.models import Topic
-from movies.models import Movie
-from taggit.managers import TaggableManager
 from markdownx.models import MarkdownxField
 from markdownx.utils import markdownify
+from taggit.managers import TaggableManager
+
+from movies.models import Movie
+from topics.models import Topic
 
 
 # Create your models here.
@@ -78,6 +78,9 @@ class Content(models.Model):
     def get_markdown(self):
         return markdownify(self.contents)
 
+    def get_comments(self):
+        return self.set_comments.order_by('-time')
+
 
 class Answer(Content):
     topic = models.ForeignKey(Topic, on_delete=models.CASCADE)
@@ -135,3 +138,7 @@ class Status(models.Model):
     action = models.CharField(max_length=1, choices=ACTION)
     image = models.ImageField(upload_to='status_images/%Y/%m/%d/', null=True)
     set_comments = GenericRelation('comments.Comment')
+
+    def get_comments(self):
+        comments = self.set_comments.order_by('-time')
+        return comments

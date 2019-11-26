@@ -33,7 +33,7 @@ class LanguageViewSet(ModelViewSet):
     def follow_language(self, request, pk=None):
         language = Language.objects.get(pk=pk)
         language.follow(request.user)
-        return Response(status=status.HTTP_202_ACCEPTED)
+        return Response(status=status.HTTP_202_ACCEPTED, data='Now you are following {}.'.format(request.user))
 
 
 class GenreViewSet(ModelViewSet):
@@ -50,7 +50,7 @@ class GenreViewSet(ModelViewSet):
     def follow_genre(self, request, pk=None):
         genre = Genre.objects.get(pk=pk)
         genre.follow(request.user)
-        return Response(data='Now you following '.format(self.name), status=status.HTTP_202_ACCEPTED)
+        return Response(data='Now you following {}.'.format(self.name), status=status.HTTP_202_ACCEPTED)
 
 
 class RatingViewSet(ModelViewSet):

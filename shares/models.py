@@ -1,10 +1,10 @@
 import uuid
 
+from django.conf import settings
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.utils.timezone import now
-from django.conf import settings
 
 
 # Create your models here.
@@ -27,3 +27,7 @@ class Share(models.Model):
 
     def get_comments(self):
         return self.set_comments.all()
+
+    @property
+    def get_number_of_likes(self):
+        return self.liked.count()
