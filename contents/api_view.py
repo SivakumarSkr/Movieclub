@@ -20,7 +20,7 @@ class AnswerViewSet(ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
-    @action(method=['patch'], detail=True)
+    @action(methods=['patch'], detail=True)
     def like(self, request, pk=None):
         answer = Answer.objects.get(pk=pk)
         answer.like_the_content(request.user)
@@ -61,7 +61,7 @@ class BlogViewSet(ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
-    @action(method=['patch'], detail=True)
+    @action(methods=['patch'], detail=True)
     def like(self, request, pk=None):
         blog = Blog.objects.get(pk=pk)
         blog.like_the_content(request.user)
@@ -102,7 +102,7 @@ class ReviewViewSet(ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
-    @action(method=['patch'], detail=True)
+    @action(methods=['patch'], detail=True)
     def like(self, request, pk=None):
         review = Review.objects.get(pk=pk)
         review.like_the_content(request.user)

@@ -21,13 +21,13 @@ class TopicViewSet(ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(created_by=self.request.user)
 
-    @action(methods=['patch'], url_path='follow/(?P<pk>[^/.]+)')
+    @action(methods=['patch'], detail=True)
     def follow(self, request, pk=None):
         topic = Topic.objects.get(pk=pk)
         topic.follow_the_topic(request.user)
         return Response(data='Now you are following {}'.format(topic.head), status=status.HTTP_202_ACCEPTED)
 
-    @action(methods=['patch'], url_path='un_follow/(?P<pk>[^/.]+)')
+    @action(methods=['patch'], detail=True)
     def un_follow(self, request, pk=None):
         topic = Topic.objects.get(pk=pk)
         topic.un_follow_the_topic(self.request.user)

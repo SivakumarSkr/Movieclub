@@ -32,12 +32,14 @@ class Group(models.Model):
     TYPE = ((OPEN, 'Open'),
             (CLOSED, 'Closed'))
 
-    uuid_id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False)
+    uuid_id = models.UUIDField(
+        default=uuid.uuid4, primary_key=True, editable=False)
     name = models.CharField('Name', max_length=30)
     time_created = models.DateTimeField(default=now)
     description = models.TextField(max_length=500)
     type_of_group = models.CharField('Type', choices=TYPE, max_length=1)
-    creator = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    creator = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     admins = models.ManyToManyField(settings.AUTH_USER_MODEL,
                                     related_name='groups_admin', blank=True)
     members = models.ManyToManyField(settings.AUTH_USER_MODEL,
@@ -107,7 +109,8 @@ class ClosedGroup(Group):
 
 class GroupBlog(Content):
     heading = models.CharField(max_length=300)
-    group = models.ForeignKey(Group, on_delete=models.CASCADE, related_name='blogs')
+    group = models.ForeignKey(
+        Group, on_delete=models.CASCADE, related_name='blogs')
     published = models.BooleanField(default=False)
 
     def __str__(self):
@@ -119,9 +122,12 @@ class GroupBlog(Content):
 
 
 class JoinRequest(models.Model):
-    uuid_id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False)
-    group = models.ForeignKey('groups.ClosedGroup', on_delete=models.CASCADE, related_name='requests')
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='join_requests')
+    uuid_id = models.UUIDField(
+        default=uuid.uuid4, primary_key=True, editable=False)
+    group = models.ForeignKey(
+        'groups.ClosedGroup', on_delete=models.CASCADE, related_name='requests')
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='join_requests')
     authorizer = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, null=True, blank=True,
                                    related_name='authorized_requests')
     requested_time = models.DateTimeField(auto_now_add=True, editable=False)

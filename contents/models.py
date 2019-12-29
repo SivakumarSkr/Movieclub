@@ -138,7 +138,34 @@ class Status(models.Model):
     action = models.CharField(max_length=1, choices=ACTION)
     image = models.ImageField(upload_to='status_images/%Y/%m/%d/', null=True)
     set_comments = GenericRelation('comments.Comment')
+    liked = models.ManyToManyField(settings.AUTH_USER_MODEL,
+                                   related_name="%(class)s_liked", blank=True)
+    disliked = models.ManyToManyField(settings.AUTH_USER_MODEL,
+                                      related_name="%(class)s_disliked", blank=True)
 
     def get_comments(self):
         comments = self.set_comments.order_by('-time')
         return comments
+
+    def like_the_content(self, user):
+        try:
+            self.disliked.remove(user)
+        finally:
+            self.liked.add(user)
+            self.save()
+
+    def dislike_the_content(self, user):
+        try:
+            self.liked.remove(user)
+        finally:
+            self.disliked.add(user)
+            self.save()
+
+    def get_likes(self):
+        return self.liked.count()
+
+    def get_dislike(self):
+        return self.disliked.count()
+
+    def get_comments(self):
+        return self.set_comments.order_by('-time')

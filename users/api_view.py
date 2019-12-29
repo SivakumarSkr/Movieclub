@@ -123,7 +123,7 @@ class UserViewSet(ModelViewSet):
         serialize = SuggestionSerializer(queryset)
         return Response(data=serialize.data, status=status.HTTP_200_OK)
 
-    @action(methods=['get'], detail=True, url_path='is_watched/(?P<pk>[^/.]+)')
+    @action(methods=['get'], detail=True)
     def check_watched_movie(self, request, pk=None):
         movie = Movie.objects.get(pk=pk)
         check = request.user.check_watched(movie)
