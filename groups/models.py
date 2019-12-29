@@ -1,14 +1,27 @@
 import uuid
 
-from django.db import models
 from django.conf import settings
+from django.db import models
 from django.utils.timezone import now
+
 from contents.models import Content
 
 
 # Create your models here.
-class GroupQuerySet(models.query.QuerySet):
-    pass
+class GroupQuerySet(models.QuerySet):
+    def get_closed(self):
+        return self.filter(type_of_group='C')
+
+    def get_open(self):
+        return self.filter(type_of_group='O')
+
+    def created_by(self, user):
+        query = self.filter(creator=user)
+        return query
+
+    def admin_by(self, user):
+        query = self.filter(admins=user)
+        return query
 
 
 class Group(models.Model):
@@ -28,6 +41,7 @@ class Group(models.Model):
                                     related_name='groups_admin', blank=True)
     followers = models.ManyToManyField(settings.AUTH_USER_MODEL,
                                        related_name='groups_followed', blank=True)
+    objects = GroupQuerySet.as_manager()
 
     def __str__(self):
         return self.name
@@ -37,17 +51,15 @@ class Group(models.Model):
         self.save()
 
     def un_follow(self, user):
-        self.followers.remove(user)
-        self.save()
+        if self.check_following(user):
+            self.followers.remove(user)
+            self.save()
 
     def check_following(self, user):
         return user in self.followers.all()
 
     def get_followers(self):
         return self.followers.all()
-
-    # def get_follower(self):
-    #     return self.followers.all()
 
     def get_admins(self):
         return self.admins.all()

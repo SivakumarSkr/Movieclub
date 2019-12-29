@@ -1,13 +1,14 @@
+import datetime
 import uuid
 
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.fields import GenericRelation
-from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator
-import datetime
+from django.db import models
 from django.db.models import signals
 from django.dispatch import receiver
-from django.conf import settings
+
 from persons.models import Star
 from suggestions.models import Suggestion
 
@@ -103,8 +104,8 @@ class Movie(models.Model):
     country = models.CharField(max_length=40)
     director = models.ForeignKey(Star, on_delete=models.PROTECT,
                                  related_name='movies_director')
-    rating = models.PositiveSmallIntegerField(default=0, validators=[MaxValueValidator(10),
-                                                                     MinValueValidator(0)])
+    rating = models.PositiveIntegerField(default=0, validators=[MaxValueValidator(10),
+                                                                MinValueValidator(0)])
     writers = models.ManyToManyField(Star, related_name='movies_writer')
     stars = models.ManyToManyField(Star, related_name='movies_star')
     thumbnail = models.ImageField(upload_to=upload_to_movies, null=True)
@@ -116,12 +117,9 @@ class Movie(models.Model):
     def __str__(self):
         return self.name
 
-    def set_rate(self):
-        a = 0
-        for i in self.ratings.all():
-            a += i.rate
-        count = self.ratings.count()
-        self.rating = round(a / count)
+    def set_rate(self, rate):
+        ave_rate = (self.rating * self.number_of_rates + rate) / self.number_of_rates + 1
+        self.rating = int(ave_rate)
         self.save()
 
     def get_stars(self):
@@ -129,6 +127,10 @@ class Movie(models.Model):
 
     def get_writers(self):
         return self.writers.all()
+
+    @property
+    def number_of_rates(self):
+        return self.ratings.count()
 
 
 class Rating(models.Model):
@@ -141,6 +143,6 @@ class Rating(models.Model):
 
 
 @receiver(signals.post_save, sender=Rating)
-def create_customer(sender, instance, created, **kwargs):
+def rate_the_movie(sender, instance, created, **kwargs):
     movie_obj = instance.movie
-    movie_obj.set_rate()
+    movie_obj.set_rate(instance.rate)

@@ -21,13 +21,21 @@ class Share(models.Model):
                                        "share_content_object_id")
     set_comments = GenericRelation('comments.Comment')
 
-    def like_the_share(self, user):
+    def like(self, user):
         self.liked.add(user)
         self.save()
+
+    def check_like(self, user):
+        return user in self.liked.all()
+
+    def unlike(self, user):
+        if self.check_like(user):
+            self.liked.remove(user)
+            self.save()
 
     def get_comments(self):
         return self.set_comments.all()
 
     @property
-    def get_number_of_likes(self):
+    def number_of_likes(self):
         return self.liked.count()

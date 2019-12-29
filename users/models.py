@@ -116,7 +116,7 @@ class User(AbstractUser):
     def get_published_answer(self):
         return self.answer_set.filter(status='P').order_by('-time')
 
-    def get_followed_groups(self):
+    def get_following_groups(self):
         return self.groups_followed.all()
 
     def get_watched_films(self):
@@ -125,7 +125,7 @@ class User(AbstractUser):
     def check_watched(self, movie):
         return movie in self.watched_films.all()
 
-    def get_followed_stars(self):
+    def get_following_stars(self):
         return self.following_stars.all()
 
     def get_suggestions_received(self):
@@ -134,3 +134,22 @@ class User(AbstractUser):
     def get_suggestions_sent(self):
         return self.suggest_sender.order_by('-time')
 
+    def get_common_followers(self, user):
+        query = self.get_following().intersection(user.get_following())
+        return query
+
+    def get_common_groups(self, user):
+        query = self.get_following_groups().intersection(user.get_following_groups())
+        return query
+
+    def get_common_star_followers(self, user):
+        query = self.get_following_stars().intersection(user.get_following_stars())
+        return query
+
+    def get_notifications_unread(self):
+        query = self.notifications.filter(unread=True)
+        return query
+
+    def get_notifications_read(self):
+        query = self.notifications.filter(unread=False)
+        return query

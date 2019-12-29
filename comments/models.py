@@ -27,7 +27,7 @@ class Comment(models.Model):
     object_id = models.CharField(max_length=40, blank=True)
     content_object = GenericForeignKey()
     set_comments = GenericRelation('self')
-    objects = CommentQuerySet()
+    objects = CommentQuerySet.as_manager()
 
     class Meta:
         ordering = ('-time',)
@@ -55,7 +55,7 @@ class Comment(models.Model):
     def get_comments(self):
         return self.set_comments
 
-    # def add_comment(self, obj):
-    #     self.content_object = obj
-    #     self.save()
-
+    @classmethod
+    def add(cls, **fields):
+        comment = cls(fields)
+        comment.save()

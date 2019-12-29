@@ -4,7 +4,6 @@ from django.conf import settings
 from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 from django.utils.text import slugify
-from django.utils.timezone import now
 from taggit.managers import TaggableManager
 
 
@@ -18,16 +17,13 @@ class TopicQuerySet(models.query.QuerySet):
     def get_trending(self):
         return self.order_by('-no_of_watches')
 
-    # def get_most_followed(self):
-    #     return sorted(self.all(), key=lambda x: x.get_followed_number())
-
 
 class Topic(models.Model):
     uuid_id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False)
     head = models.CharField(max_length=500)
-    time = models.DateTimeField(default=now, editable=False)
+    time = models.DateTimeField(auto_now_add=True, editable=False)
     description = models.TextField(null=True, blank=True)
-    slug = models.SlugField(max_length=300, null=True, blank=True)
+    slug = models.SlugField(max_length=300, null=False, blank=True)
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
                                    related_name='topics')
     tags = TaggableManager()
@@ -45,8 +41,11 @@ class Topic(models.Model):
         self.followers.add(user)
         self.save()
 
+    def check_the_follow(self, user):
+        return user in self.followers.all()
+
     def un_follow_the_topic(self, user):
-        if user in self.followers.all():
+        if self.check_the_follow(user):
             self.followers.remove(user)
             self.save()
 
@@ -56,6 +55,7 @@ class Topic(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = slugify(f"{self.head} {self.time}", )
+            self.slug = slugify(f"{self.head}", )
         super().save(*args, **kwargs)
+
 
