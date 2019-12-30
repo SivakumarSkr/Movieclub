@@ -106,6 +106,11 @@ class ClosedGroup(Group):
     class Meta:
         proxy = True
 
+    def is_admin(self, user):
+        admins = self.get_admins()
+        if admins.filter(pk=user.pk).exists() or user == self.creator:
+            return True
+
 
 class GroupBlog(Content):
     heading = models.CharField(max_length=300)
