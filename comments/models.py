@@ -18,6 +18,7 @@ class Comment(models.Model):
                              related_name='comments')
     time = models.DateTimeField(default=now, editable=False)
     text = models.TextField()
+    edited = models.BooleanField('Edited', default=False, blank=True)
     likes = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True,
                                    related_name='liked_comments')
     dislikes = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True,
@@ -55,7 +56,6 @@ class Comment(models.Model):
     def get_comments(self):
         return self.set_comments
 
-    @classmethod
-    def add(cls, **fields):
-        comment = cls(fields)
-        comment.save()
+    def set_edited(self):
+        self.edited = True
+        self.save()

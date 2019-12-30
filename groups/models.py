@@ -74,10 +74,35 @@ class Group(models.Model):
         self.admins.add(user)
         self.save()
 
+    def is_admin(self, user):
+        admins = self.get_admins()
+        if admins.filter(pk=user.pk).exists() or user == self.creator:
+            return True
+
 
 class GroupBlog(Content):
     heading = models.CharField(max_length=300)
     group = models.ForeignKey(Group, on_delete=models.CASCADE, related_name='blogs')
+    published = models.BooleanField(default=False)
 
     def __str__(self):
         return self.heading
+
+    def make_published(self):
+        self.published = True
+        self.save()
+
+
+class JoinRequest(models.Model):
+    uuid_id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False)
+    group = models.ForeignKey('groups.Group', on_delete=models.CASCADE, related_name='requests')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='join_requests')
+    approved_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT,
+                                    related_name='approved_requests')
+    requested_time = models.DateTimeField(auto_now_add=True, editable=False)
+    is_approved = models.BooleanField(default=False)
+
+    def approve(self, user):
+        if self.group.is_admin(user):
+            self.is_approved = True
+            self.save()
