@@ -4,7 +4,7 @@ from django.dispatch import receiver
 
 from comments.models import Comment
 from contents.models import Answer, Blog, Review, Status
-from groups.models import GroupBlog
+from groups.models import GroupBlog, JoinRequest
 from notifications.models import Notification
 from shares.models import Share
 from suggestions.models import Suggestion
@@ -80,6 +80,28 @@ def answer_notification(sender, instance, created, **kwargs):
             "receiver": instance.topic.created_by,
             "subject_object": instance,
             "category": 'AN'
+        }
+        notification_object = Notification(**data)
+        notification_object.save()
+
+
+@receiver(signals.post_save, sender=JoinRequest)
+def join_request(sender, instance, created, **kwargs):
+    if instance.is_approved:
+        data = {
+            'created': instance.approved_by,
+            'received': instance.user,
+            'subject_object': instance,
+            'category': 'RA',
+        }
+        notification_object = Notification(**data)
+        notification_object.save()
+    if created:
+        data = {
+            'created': instance.user,
+            'receiver': instance.group.get_authorities(),
+            'subject_object': instance,
+            'category': 'JN',
         }
         notification_object = Notification(**data)
         notification_object.save()

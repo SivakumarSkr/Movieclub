@@ -57,5 +57,3 @@ class Star(models.Model):
 
     def __str__(self):
         return self.name
-    # add get followers who follows user
-
