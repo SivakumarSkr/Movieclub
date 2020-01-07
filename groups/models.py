@@ -1,7 +1,10 @@
+
 import uuid
 
 from django.conf import settings
 from django.db import models
+from django.db.models import signals
+from django.dispatch import receiver
 from django.utils.timezone import now
 
 from contents.models import Content
@@ -70,9 +73,10 @@ class Group(models.Model):
     def check_closed(self):
         return self.type_of_group == 'C'
 
-    def add_admin(self, user):
+    def add_admin(self, user, is_creator=None):
         self.admins.add(user)
-        self.save()
+        if not is_creator:
+            self.save()
 
     def is_admin(self, user):
         admins = self.get_admins()
@@ -97,7 +101,7 @@ class JoinRequest(models.Model):
     uuid_id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False)
     group = models.ForeignKey('groups.Group', on_delete=models.CASCADE, related_name='requests')
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='join_requests')
-    approved_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT,
+    approved_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, null=True, blank=True,
                                     related_name='approved_requests')
     requested_time = models.DateTimeField(auto_now_add=True, editable=False)
     is_approved = models.BooleanField(default=False)
@@ -106,3 +110,12 @@ class JoinRequest(models.Model):
         if self.group.is_admin(user):
             self.is_approved = True
             self.save()
+
+    def cancel(self, user):
+        if self.user == user or self.group.is_admin(user):
+            self.delete()
+
+
+@receiver(signals.pre_save, sender=Group)
+def add_creator_as_admin(sender, instance, created=None, **kwargs):
+    instance.add_admin(instance.creator, is_creator=True)

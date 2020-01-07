@@ -35,6 +35,8 @@ class Notification(models.Model):
     POSTED = 'PT'
     REPLIED = 'RP'
     SUGGESTION = 'SG'
+    JOIN_REQUEST = 'JR'
+    REQUEST_APPROVED = 'RA'
 
     NOTIFICATION_TYPE = (
         (LIKED, 'liked'),
@@ -44,13 +46,13 @@ class Notification(models.Model):
         (FOLLOWING, 'following'),
         (POSTED, 'posted'),
         (REPLIED, 'replied'),
-        (SUGGESTION, 'suggestion')
-
+        (SUGGESTION, 'suggestion'),
+        (JOIN_REQUEST, 'group join'),
+        (REQUEST_APPROVED, 'request approved'),
     )
     creator = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
                                 related_name='creator')
-    receiver = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='notifications',
-                                 blank=False)
+    receiver = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='notifications', blank=False)
     unread = models.BooleanField(default=True)
     time = models.DateTimeField(default=timezone.now)
     uuid_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
