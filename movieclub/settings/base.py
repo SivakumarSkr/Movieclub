@@ -9,7 +9,7 @@ LOCAL_APPS = [
     'comments',
     'contents',
     'groups',
-    # 'messaging',
+    'messaging',
     'notifications',
     'persons',
     'topics',
