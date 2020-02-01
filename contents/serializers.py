@@ -7,7 +7,8 @@ class BlogSerializer(ModelSerializer):
     """Serializer for Blog"""
     class Meta:
         model = Blog
-        fields = ('heading', 'contents', 'image')
+        fields = ('uuid_id', 'heading', 'contents', 'image')
+        read_only_fields = ('uuid_id',)
 
 
 class AnswerSerializer(ModelSerializer):

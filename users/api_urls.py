@@ -8,5 +8,5 @@ router.register('users', UserViewSet)
 
 urlpatterns = [
     path('login/', UserLogin.as_view()),
-    path('user/', include(router.urls))
+    path('', include(router.urls))
 ]
