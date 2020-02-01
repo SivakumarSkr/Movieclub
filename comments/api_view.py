@@ -18,31 +18,31 @@ class CommentViewSet(ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
-    @action(methods=["patch"], detail=True, url_path='like')
+    @action(methods=["patch"], detail=True, url_path='like', permission_classes=[IsAuthenticatedOrReadOnly])
     def like(self, request, pk=None):
         comment = Comment.objects.get(pk=pk)
         comment.like_the_comment(request.user)
         return Response(status=status.HTTP_202_ACCEPTED)
 
-    @action(methods=['patch'], detail=True, url_path='dislike')
+    @action(methods=['patch'], detail=True, url_path='dislike', permission_classes=[IsAuthenticatedOrReadOnly])
     def dislike_the_comment(self, request, pk=None):
         comment = Comment.objects.get(pk=pk)
         comment.dislike_the_comment(request.user)
         return Response(status=status.HTTP_202_ACCEPTED)
 
-    @action(methods=['get'], detail=True, url_path='get-likes')
+    @action(methods=['get'], detail=True, url_path='get-likes', permission_classes=[IsAuthenticatedOrReadOnly])
     def get_likes(self, request, pk=None):
         comment = Comment.objects.get(pk=pk)
         likes = comment.get_no_likes()
         return Response(data={'likes': likes}, status=status.HTTP_200_OK)
 
-    @action(methods=['get'], detail=True, url_path='get-dislikes')
+    @action(methods=['get'], detail=True, url_path='get-dislikes', permission_classes=[IsAuthenticatedOrReadOnly])
     def get_dislikes(self, request, pk=None):
         comment = Comment.objects.get(pk=pk)
         dislikes = comment.get_no_dislikes()
         return Response(data={'dislikes': dislikes}, status=status.HTTP_200_OK)
 
-    @action(methods=['get'], detail=True, url_path='get-comments')
+    @action(methods=['get'], detail=True, url_path='get-comments', permission_classes=[IsAuthenticatedOrReadOnly])
     def get_comments(self, request, pk=None):
         comment = Comment.objects.get(pk=pk)
         comments = comment.get_comments()
