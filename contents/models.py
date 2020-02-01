@@ -148,10 +148,6 @@ class Status(models.Model):
     disliked = models.ManyToManyField(settings.AUTH_USER_MODEL,
                                       related_name="%(class)s_disliked", blank=True)
 
-    def get_comments(self):
-        comments = self.set_comments.order_by('-time')
-        return comments
-
     def like_the_content(self, user):
         try:
             self.disliked.remove(user)
