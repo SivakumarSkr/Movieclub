@@ -9,4 +9,5 @@ urlpatterns = [
     path('movies/', include('movies.api_urls')),
     path('persons/', include('persons.api_urls')),
     path('shares/', include('shares.api_urls')),
+    path('comments/', include('comments.api_urls')),
 ]

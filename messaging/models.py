@@ -24,6 +24,16 @@ class Chat(models.Model):
         # time at which last message sent in this chat
         return self.get_all_messages().latest().time
 
+    def last_message(self):
+        return self.chat_messages.latest()
+
+    @property
+    def number_of_unread_message(self):
+        return self.get_unread_messages().count()
+
+    def is_participant(self, user):
+        return self.participants.filter(pk=user.pk).exist()
+
 
 class Message(models.Model):
     uuid_id = models.UUIDField(default=uuid.uuid3, primary_key=True)
@@ -42,6 +52,11 @@ class Message(models.Model):
         if not self.seen:
             self.seen = True
             self.seen_time = timezone.now()
+            self.save()
+
+    def set_delivered(self):
+        if not self.delivered:
+            self.delivered = True
             self.save()
 
     class Meta:

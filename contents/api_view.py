@@ -1,3 +1,4 @@
+from django.contrib.auth import get_user_model
 from rest_framework import status
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.decorators import action
@@ -9,12 +10,15 @@ from comments.serializers import CommentSerializer
 from contents.models import Answer, Blog, Review, Status
 from contents.permissions import IsOwner
 from contents.serializers import AnswerSerializer, BlogSerializer, ReviewSerializer, StatusSerializer
+from users.serializers import UserSerializer
+
+User = get_user_model()
 
 
 class AnswerViewSet(ModelViewSet):
     serializer_class = AnswerSerializer
     permission_classes = (IsAuthenticatedOrReadOnly, IsOwner,)
-    authentication_classes = [TokenAuthentication]
+    # authentication_classes = [TokenAuthentication]
     queryset = Answer.objects.all()
 
     def perform_create(self, serializer):
@@ -24,25 +28,25 @@ class AnswerViewSet(ModelViewSet):
     def like(self, request, pk=None):
         answer = Answer.objects.get(pk=pk)
         answer.like_the_content(request.user)
-        return Response(data='liked', status=status.HTTP_202_ACCEPTED)
+        return Response(status=status.HTTP_202_ACCEPTED)
 
-    @action(methods=['patch', 'put'], detail=True)
+    @action(methods=['patch'], detail=True)
     def un_like(self, request, pk=None):
         answer = Answer.objects.get(pk=pk)
         answer.dislike_the_content(request.user)
-        return Response(data='disliked', status=status.HTTP_202_ACCEPTED)
+        return Response(status=status.HTTP_202_ACCEPTED)
 
     @action(methods=['get'], detail=True)
     def get_likes(self, request, pk=None):
         answer = Answer.objects.get(pk=pk)
         likes = answer.get_likes()
-        return Response(data=likes, status=status.HTTP_200_OK)
+        return Response(data={'likes': likes}, status=status.HTTP_200_OK)
 
     @action(methods=['get'], detail=True)
     def get_dislikes(self, request, pk=None):
         answer = Answer.objects.get(pk=pk)
         dislikes = answer.get_dislike()
-        return Response(data=dislikes, status=status.HTTP_200_OK)
+        return Response(data={'dislikes': dislikes}, status=status.HTTP_200_OK)
 
     @action(methods=['get'], detail=True)
     def get_comments(self, request, pk=None):
@@ -55,41 +59,48 @@ class AnswerViewSet(ModelViewSet):
 class BlogViewSet(ModelViewSet):
     serializer_class = BlogSerializer
     permission_classes = (IsAuthenticatedOrReadOnly, IsOwner,)
-    authentication_classes = [TokenAuthentication]
+    # authentication_classes = [TokenAuthentication]
     queryset = Blog.objects.all()
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
-    @action(methods=['patch'], detail=True)
+    @action(methods=['patch'], detail=True, url_path='like')
     def like(self, request, pk=None):
         blog = Blog.objects.get(pk=pk)
         blog.like_the_content(request.user)
         return Response(data='liked', status=status.HTTP_202_ACCEPTED)
 
-    @action(methods=['patch', 'put'], detail=True)
+    @action(methods=['patch', 'put'], detail=True, url_path='dislike')
     def un_like(self, request, pk=None):
-        review = Review.objects.get(pk=pk)
-        review.dislike_the_content(request.user)
+        blog = Blog.objects.get(pk=pk)
+        blog.dislike_the_content(request.user)
         return Response(data='disliked', status=status.HTTP_202_ACCEPTED)
 
-    @action(methods=['get'], detail=True)
+    @action(methods=['get'], detail=True, url_path='get-likes')
     def get_likes(self, request, pk=None):
         blog = Blog.objects.get(pk=pk)
         likes = blog.get_likes()
         return Response(data=likes, status=status.HTTP_200_OK)
 
-    @action(methods=['get'], detail=True)
+    @action(methods=['get'], detail=True, url_path='get-dislikes')
     def get_dislikes(self, request, pk=None):
         blog = Blog.objects.get(pk=pk)
         dislikes = blog.get_dislike()
         return Response(data=dislikes, status=status.HTTP_200_OK)
 
-    @action(methods=['get'], detail=True)
+    @action(methods=['get'], detail=True, url_path='get-comments')
     def get_comments(self, request, pk=None):
         blog = Blog.objects.get(pk=pk)
         comments = blog.get_comments()
-        serialize = CommentSerializer(comments, many=True)
+        serialize = CommentSerializer(comments, many=True, context={'request': request})
+        return Response(data=serialize.data, status=status.HTTP_200_OK)
+
+    @action(methods=['get'], detail=True, url_path='common-likes')
+    def get_common_liked_user(self, request, pk=None):
+        blog = Blog.objects.get(pk=pk)
+        common_likes = blog.get_common_likes(request.user)
+        serialize = UserSerializer(common_likes, many=True)
         return Response(data=serialize.data, status=status.HTTP_200_OK)
 
 

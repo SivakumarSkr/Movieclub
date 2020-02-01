@@ -26,7 +26,7 @@ class Comment(models.Model):
     image = models.ImageField(null=True, blank=True, upload_to='')
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.CharField(max_length=40, blank=True)
-    content_object = GenericForeignKey()
+    comment_object = GenericForeignKey()
     set_comments = GenericRelation('self')
     objects = CommentQuerySet.as_manager()
 
