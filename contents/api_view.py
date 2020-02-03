@@ -123,25 +123,25 @@ class ReviewViewSet(ModelViewSet):
     def like(self, request, pk=None):
         review = Review.objects.get(pk=pk)
         review.like_the_content(request.user)
-        return Response(data='liked', status=status.HTTP_202_ACCEPTED)
+        return Response(status=status.HTTP_202_ACCEPTED)
 
     @action(methods=['patch', 'put'], detail=True, url_path='dislike', permission_classes=[IsAuthenticatedOrReadOnly])
     def un_like(self, request, pk=None):
         review = Review.objects.get(pk=pk)
         review.dislike_the_content(request.user)
-        return Response(data='disliked', status=status.HTTP_202_ACCEPTED)
+        return Response(status=status.HTTP_202_ACCEPTED)
 
     @action(methods=['get'], detail=True, url_path='get-likes', permission_classes=[IsAuthenticatedOrReadOnly])
     def get_likes(self, request, pk=None):
         review = Review.objects.get(pk=pk)
         likes = review.get_likes()
-        return Response(data=likes, status=status.HTTP_200_OK)
+        return Response(data={'likes': likes}, status=status.HTTP_200_OK)
 
     @action(methods=['get'], detail=True, url_path='get-dislikes', permission_classes=[IsAuthenticatedOrReadOnly])
     def get_dislikes(self, request, pk=None):
         review = Review.objects.get(pk=pk)
         dislikes = review.get_dislike()
-        return Response(data=dislikes, status=status.HTTP_200_OK)
+        return Response(data={'dislikes': dislikes}, status=status.HTTP_200_OK)
 
     @action(methods=['get'], detail=True, url_path='get-comments', permission_classes=[IsAuthenticatedOrReadOnly])
     def get_comments(self, request, pk=None):
@@ -171,25 +171,25 @@ class StatusVewSet(ModelViewSet):
     def like(self, request, pk=None):
         status_obj = Status.objects.get(pk=pk)
         status_obj.like_the_content(request.user)
-        return Response(data='liked', status=status.HTTP_202_ACCEPTED)
+        return Response(status=status.HTTP_202_ACCEPTED)
 
     @action(methods=['patch', 'put'], detail=True, url_path='dislike', permission_classes=[IsAuthenticatedOrReadOnly])
     def un_like(self, request, pk=None):
         status_obj = Status.objects.get(pk=pk)
         status_obj.dislike_the_content(request.user)
-        return Response(data='disliked', status=status.HTTP_202_ACCEPTED)
+        return Response(status=status.HTTP_202_ACCEPTED)
 
     @action(methods=['get'], detail=True, url_path='get-likes', permission_classes=[IsAuthenticatedOrReadOnly])
     def get_likes(self, request, pk=None):
         status_obj = Status.objects.get(pk=pk)
         likes = status_obj.get_likes()
-        return Response(data=likes, status=status.HTTP_200_OK)
+        return Response(data={'likes': likes}, status=status.HTTP_200_OK)
 
     @action(methods=['get'], detail=True, url_path='get-dislikes', permission_classes=[IsAuthenticatedOrReadOnly])
     def get_dislikes(self, request, pk=None):
         status_obj = Status.objects.get(pk=pk)
         dislikes = status_obj.get_dislike()
-        return Response(data=dislikes, status=status.HTTP_200_OK)
+        return Response(data={'dislikes': dislikes}, status=status.HTTP_200_OK)
 
     @action(methods=['get'], detail=True, url_path='get-comments', permission_classes=[IsAuthenticatedOrReadOnly])
     def get_comments(self, request, pk=None):

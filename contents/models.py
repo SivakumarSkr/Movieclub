@@ -170,3 +170,8 @@ class Status(models.Model):
 
     def get_comments(self):
         return self.set_comments.order_by('-time')
+
+    def get_common_likes(self, user):
+        likes = self.liked.all()
+        followers = user.get_following()
+        return likes.intersection(followers)

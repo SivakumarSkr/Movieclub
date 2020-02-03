@@ -33,4 +33,4 @@ class StatusSerializer(ModelSerializer):
     class Meta:
         model = Status
         fields = ('pk', 'time', 'content', 'action', 'image')
-        readonly_fields = ('pk', 'user')
+        read_only_fields = ('pk', 'user', 'time')
