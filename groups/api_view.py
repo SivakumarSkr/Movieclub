@@ -9,7 +9,7 @@ from rest_framework.viewsets import ModelViewSet
 
 from groups.models import Group, GroupBlog, ClosedGroup, JoinRequest
 from groups.permissions import IsOwnerBlog, IsAdmin, IsCreator, IsMember, IsAuthorizer, IsRequestPermission
-from groups.serializers import GroupSerializer, GroupBlogSerializer, JoinRequestSerializer
+from groups.serializers import GroupSerializer, GroupBlogSerializer, JoinRequestSerializer, ClosedGroupSerializer
 from users.serializers import UserSerializer
 
 User = get_user_model()
@@ -53,29 +53,57 @@ class GroupVewSet(ModelViewSet):
 
 class ClosedGroupViewSet(GroupVewSet):
     permission_classes = (IsCreator,)
+    serializer_class = ClosedGroupSerializer
     # authentication_classes = [TokenAuthentication]
     queryset = ClosedGroup.objects.all()
 
     @action(methods=['get'], detail=True, url_path='get-admins', permission_classes=[IsAdmin])
     def get_admins(self, request, pk=None):
-        group = self.queryset.get(pk=pk)
-        admins = group.get_admins()
-        serialize = UserSerializer(admins, many=True)
-        return Response(data=serialize.data, status=status.HTTP_200_OK)
+        status_code = status.HTTP_200_OK
+        try:
+            group = self.queryset.get(pk=pk)
+        except ClosedGroup.DoesNotExist as e:
+            data = {'detail': "This action is not applicable for open groups."}
+            status_code = status.HTTP_400_BAD_REQUEST
+        else:
+            admins = group.get_admins()
+            serialize = UserSerializer(admins, many=True)
+            data = serialize.data
+        return Response(data=data, status=status_code)
 
     @action(methods=['patch'], detail=True, url_path='add-admin', permission_classes=[IsCreator])
     def add_admin(self, request, pk=None):
-        user = User.objects.get(pk=request.GET.get('user', None))
-        group = self.queryset.get(pk=pk)
-        group.add_admin(user)
-        return Response(status=status.HTTP_200_OK)
+        data = {}
+        status_code = status.HTTP_200_OK
+        try:
+            user = User.objects.get(pk=request.query_params.get('user', None))
+            group = self.queryset.get(pk=pk)
+        except ClosedGroup.DoesNotExist as e:
+            data = {'detail': "This action is not applicable for open groups."}
+            status_code = status.HTTP_400_BAD_REQUEST
+        except User.DoesNotExist as e:
+            data = {'detail': "Please provide valid user."}
+            status_code = status.HTTP_400_BAD_REQUEST
+        else:
+            group.add_admin(user)
+        return Response(data=data, status=status_code)
 
     @action(methods=['patch'], detail=True, url_path='remove-admin', permission_classes=[IsCreator])
     def remove_admin(self, request, pk=None):
-        user = User.objects.get(pk=request.GET.get('user', None))
-        group = self.queryset.get(pk=pk)
-        group.remove_admin(user)
-        return Response(status=status.HTTP_200_OK)
+        data = {}
+        status_code = status.HTTP_200_OK
+        try:
+            user = User.objects.get(pk=request.GET.get('user', None))
+            group = self.queryset.get(pk=pk)
+        except ClosedGroup.DoesNotExist as e:
+            data = {'detail': "This action is not applicable for open groups."}
+            status_code = status.HTTP_400_BAD_REQUEST
+        except User.DoesNotExist as e:
+            data = {'detail': "Please provide valid user."}
+            status_code = status.HTTP_400_BAD_REQUEST
+        else:
+            group.remove_admin(user)
+        return Response(data=data, status=status_code)
 
     def join(self, request, pk=None):
         pass
