@@ -9,8 +9,10 @@ from contents.models import Content
 
 # Create your models here.
 class GroupQuerySet(models.QuerySet):
-    def get_closed(self):
-        return self.filter(type_of_group='C')
+
+    def create(self, **kwargs):
+        kwargs['type_of_group'] = 'O'
+        return super().create(**kwargs)
 
     def get_open(self):
         return self.filter(type_of_group='O')
@@ -25,10 +27,16 @@ class GroupQuerySet(models.QuerySet):
 
 
 class Group(models.Model):
+    OPEN = 'O'
+    CLOSED = 'C'
+    TYPE = ((OPEN, 'Open'),
+            (CLOSED, 'Closed'))
+
     uuid_id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False)
     name = models.CharField('Name', max_length=30)
     time_created = models.DateTimeField(default=now)
     description = models.TextField(max_length=500)
+    type_of_group = models.CharField('Type', choices=TYPE, max_length=1)
     creator = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     admins = models.ManyToManyField(settings.AUTH_USER_MODEL,
                                     related_name='groups_admin', blank=True)
@@ -62,7 +70,18 @@ class Group(models.Model):
         return self.creator == user
 
 
+class ClosedGroupManager(models.Manager):
+
+    def get_queryset(self):
+        return super().get_queryset().filter(type_of_group='C')
+
+    def create(self, **kwargs):
+        kwargs['type_of_group'] = 'C'
+        return super().create(**kwargs)
+
+
 class ClosedGroup(Group):
+    objects = ClosedGroupManager()
 
     def add_admin(self, user):
         if not self.is_admin(user):
