@@ -11,7 +11,7 @@ DEBUG = True
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'movieclub',
+        'NAME': 'moviemania',
         'USER': 'siva_movieclub',
         'PASSWORD': 'password',
         'HOST': 'localhost',
