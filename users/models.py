@@ -1,3 +1,5 @@
+import uuid
+
 from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractUser
 from django.core.mail import send_mail
@@ -36,6 +38,7 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractUser):
+    uuid_id = models.UUIDField(default=uuid.uuid4, primary_key=True)
     is_prime = models.BooleanField(default=False)
     avatar = models.ImageField(upload_to='avatars/', null=True, blank=True)
     date_of_birth = models.DateField(null=True)
