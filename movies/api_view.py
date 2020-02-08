@@ -31,7 +31,7 @@ class LanguageViewSet(ModelViewSet):
 
     @action(detail=False, methods=['put'], url_path='follow/(?P<pk>[^/.]+)', name='follow_language')
     def follow_language(self, request, pk=None):
-        language = Language.objects.get(pk=pk)
+        language = self.get_object()
         language.follow(request.user)
         return Response(status=status.HTTP_202_ACCEPTED, data='Now you are following {}.'.format(request.user))
 
@@ -48,7 +48,7 @@ class GenreViewSet(ModelViewSet):
 
     @action(detail=False, methods=['put'], url_path='follow/(?P<pk>[^/.]+)', name='follow_genre')
     def follow_genre(self, request, pk=None):
-        genre = Genre.objects.get(pk=pk)
+        genre = self.get_object()
         genre.follow(request.user)
         return Response(data='Now you following {}.'.format(self.name), status=status.HTTP_202_ACCEPTED)
 
