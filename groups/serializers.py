@@ -42,4 +42,4 @@ class JoinRequestSerializer(ModelSerializer):
     class Meta:
         model = JoinRequest
         fields = '__all__'
-        read_only_fields = '__all__'
+        read_only_fields = ('uuid_id', 'group', 'user', 'authorizer', 'requested_time', '')

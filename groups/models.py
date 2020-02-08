@@ -69,6 +69,9 @@ class Group(models.Model):
     def is_creator(self, user):
         return self.creator == user
 
+    def get_common_members(self, user):
+        return self.get_members().intersection(user.get_following())
+
 
 class ClosedGroupManager(models.Manager):
 
@@ -113,9 +116,10 @@ class GroupBlog(Content):
     def __str__(self):
         return self.heading
 
-    def make_published(self):
-        self.published = True
-        self.save()
+
+class ClosedGroupBlog(GroupBlog):
+    class Meta:
+        proxy = True
 
 
 class JoinRequest(models.Model):
