@@ -1,13 +1,11 @@
 from rest_framework.permissions import BasePermission, SAFE_METHODS
 
 
-class Permission(BasePermission):
-    def has_object_permission(self, request, view, obj):
+class IsPrime(BasePermission):
+    def has_permission(self, request, view):
         if request.method in SAFE_METHODS:
             return True
-        else:
-            var = request.user.is_prime
-            return var
+        return request.user.is_prime
 
 
 class IsOwner(BasePermission):

@@ -6,13 +6,13 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from movies.models import Movie, Language, Genre, Rating
-from movies.permissions import Permission, IsOwner
+from movies.permissions import IsPrime, IsOwner
 from movies.serializers import MovieSerializer, LanguageSerializer, GenreSerializer, RatingSerializer
 
 
 class MovieViewSet(ModelViewSet):
     serializer_class = MovieSerializer
-    permission_classes = (Permission,)
+    permission_classes = (IsPrime,)
     authentication_classes = [TokenAuthentication]
     queryset = Movie.objects.all()
 
@@ -22,14 +22,15 @@ class MovieViewSet(ModelViewSet):
 
 class LanguageViewSet(ModelViewSet):
     serializer_class = LanguageSerializer
-    permission_classes = (Permission,)
+    permission_classes = (IsPrime,)
     # authentication_classes = [TokenAuthentication]
     queryset = Language.objects.all()
 
     def perform_create(self, serializer):
         serializer.save()
 
-    @action(detail=False, methods=['put'], url_path='follow/(?P<pk>[^/.]+)', name='follow_language')
+    @action(detail=True, methods=['put'], url_path='follow', name='follow_language',
+            permission_classes=[IsAuthenticated])
     def follow_language(self, request, pk=None):
         language = self.get_object()
         language.follow(request.user)
@@ -38,7 +39,7 @@ class LanguageViewSet(ModelViewSet):
 
 class GenreViewSet(ModelViewSet):
     serializer_class = GenreSerializer
-    permission_classes = (Permission,)
+    permission_classes = (IsPrime,)
     # authentication_classes = [TokenAuthentication]
     queryset = Genre.objects.all()
     search_fields = ('name', 'released_year', 'country', 'director__name', 'language__name', 'stars__name')
@@ -46,7 +47,7 @@ class GenreViewSet(ModelViewSet):
     def perform_create(self, serializer):
         serializer.save()
 
-    @action(detail=False, methods=['put'], url_path='follow/(?P<pk>[^/.]+)', name='follow_genre')
+    @action(detail=True, methods=['put'], url_path='follow', name='follow_genre', permission_classes=[IsAuthenticated])
     def follow_genre(self, request, pk=None):
         genre = self.get_object()
         genre.follow(request.user)

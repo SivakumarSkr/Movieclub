@@ -11,11 +11,11 @@ DEBUG = True
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'moviemania',
-        'USER': 'siva_movieclub',
-        'PASSWORD': 'password',
+        'NAME': 'movieclub',
+        'USER': 'movieclub',
+        'PASSWORD': 'movieclub',
         'HOST': 'localhost',
-        'PORT': '',
+        'PORT': '5432',
     }
 }
 
