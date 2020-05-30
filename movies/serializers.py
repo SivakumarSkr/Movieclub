@@ -16,7 +16,7 @@ class LanguageSerializer(ModelSerializer):
     class Meta:
         model = Language
         fields = ('pk', 'name', 'thumbnail')
-        read_only_fields = ('followers',)
+        read_only_fields = ('pk', 'followers')
 
 
 class MovieSerializer(ModelSerializer):

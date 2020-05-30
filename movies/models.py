@@ -6,7 +6,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.fields import GenericRelation
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
-from django.db.models import signals
+from django.db.models import signals, Sum
 from django.dispatch import receiver
 
 from persons.models import Star
@@ -79,7 +79,7 @@ class Language(models.Model):
         return self.name
 
     def check_following(self, user):
-        return user in self.followers.all()
+        return self.followers.filter(pk=user.pk).values_list('pk', flat=True)
 
     def follow(self, user):
         if not self.check_following(user):
@@ -97,20 +97,21 @@ class Movie(models.Model):
     name = models.CharField(max_length=30)
     released_year = models.IntegerField(validators=
                                         [MinValueValidator(1900),
-                                         MaxValueValidator(datetime.date.today().year)])
+                                         MaxValueValidator(datetime.date.today().year)], null=True)
     language = models.ForeignKey(Language, on_delete=models.PROTECT,
-                                 related_name='movies_language')
+                                 related_name='movies_language', null=True)
     genre = models.ManyToManyField(Genre, related_name='movies_genre')
-    country = models.CharField(max_length=40)
+    country = models.CharField(max_length=40, null=True)
     director = models.ForeignKey(Star, on_delete=models.PROTECT,
-                                 related_name='movies_director')
+                                 related_name='movies_director', null=True)
     rating = models.PositiveIntegerField(default=0, validators=[MaxValueValidator(10),
                                                                 MinValueValidator(0)])
     writers = models.ManyToManyField(Star, related_name='movies_writer')
     stars = models.ManyToManyField(Star, related_name='movies_star')
     thumbnail = models.ImageField(upload_to=upload_to_movies, null=True)
-    suggestions = GenericRelation(Suggestion, related_query_name='movie_suggestion')
-    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, related_name='created_movies')
+    suggestions = GenericRelation(Suggestion, related_query_name='movie_suggestion', null=True)
+    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, on_delete=models.PROTECT,
+                                   related_name='created_movies')
     updated_by = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='updated_movies')
     objects = MovieQuerySet.as_manager()
 
@@ -118,8 +119,8 @@ class Movie(models.Model):
         return self.name
 
     def set_rate(self, rate):
-        ave_rate = (self.rating * self.number_of_rates + rate) / self.number_of_rates + 1
-        self.rating = int(ave_rate)
+        ave_rate = self.ratings.all().aggregate(rating=(Sum('rate') + rate) / (self.number_of_rates + 1))
+        self.rating = ave_rate.get('rating', self.rating)
         self.save()
 
     def get_stars(self):

@@ -39,7 +39,7 @@ class Notification(models.Model):
     REQUEST_APPROVED = 'RA'
 
     NOTIFICATION_TYPE = (
-        (LIKED, 'liked'),
+        (LIKED, 'likes'),
         (COMMENTED, 'commented'),
         (SHARED, 'shared'),
         (ANSWERED, 'answered'),
