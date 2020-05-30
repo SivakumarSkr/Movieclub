@@ -5,8 +5,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
+from core.permissions import IsOwner, IsPrime
 from movies.models import Movie, Language, Genre, Rating
-from movies.permissions import IsPrime, IsOwner
 from movies.serializers import MovieSerializer, LanguageSerializer, GenreSerializer, RatingSerializer
 
 
@@ -36,6 +36,13 @@ class LanguageViewSet(ModelViewSet):
         language.follow(request.user)
         return Response(status=status.HTTP_202_ACCEPTED, data='Now you are following {}.'.format(request.user))
 
+    @action(detail=True, methods=['put'], url_path='un_follow', name='un_follow_language',
+            permission_classes=[IsAuthenticated])
+    def un_follow_language(self, request, pk=None):
+        language = self.get_object()
+        language.un_follow(request.user)
+        return Response(status=status.HTTP_202_ACCEPTED)
+
 
 class GenreViewSet(ModelViewSet):
     serializer_class = GenreSerializer
@@ -53,15 +60,21 @@ class GenreViewSet(ModelViewSet):
         genre.follow(request.user)
         return Response(data='Now you following {}.'.format(self.name), status=status.HTTP_202_ACCEPTED)
 
+    @action(detail=True, methods=['put'], url_path='un_follow', name='un_follow_genre',
+            permission_classes=[IsAuthenticated])
+    def un_follow_genre(self, request, pk=None):
+        genre = self.get_object()
+        genre.un_follow(request.user)
+        return Response(status=status.HTTP_202_ACCEPTED)
+
 
 class RatingViewSet(ModelViewSet):
     serializer_class = RatingSerializer
-    permission_classes = (IsOwner, IsAuthenticated)
-    authentication_classes = [TokenAuthentication]
+    permission_classes = (IsOwner,)
+    # authentication_classes = [TokenAuthentication]
     queryset = Rating.objects.all()
 
     def perform_create(self, serializer):
-        serializer.save(created_by=self.request.user)
-
-
-
+        movie_id = self.request.POST.get('movie', None)
+        movie = Movie.objects.get(pk=movie_id)
+        serializer.save(created_by=self.request.user, movie=movie)
