@@ -7,8 +7,8 @@ class GenreSerializer(ModelSerializer):
 
     class Meta:
         model = Genre
-        fields = ('name', 'thumbnail')
-        read_only_fields = ('followers',)
+        fields = ('pk', 'name', 'thumbnail')
+        read_only_fields = ('pk', 'followers',)
 
 
 class LanguageSerializer(ModelSerializer):
@@ -23,13 +23,14 @@ class MovieSerializer(ModelSerializer):
 
     class Meta:
         model = Movie
-        fields = ('name', 'released_year', 'language', 'genre', 'country',
+        fields = ('pk', 'name', 'released_year', 'language', 'genre', 'country',
                   'director', 'writers', 'stars', 'thumbnail',)
-        read_only_fields = ('rating',)
+        read_only_fields = ('pk', 'rating',)
 
 
 class RatingSerializer(ModelSerializer):
 
     class Meta:
         model = Rating
-        fields = ('movie', 'user', 'rate')
+        fields = ('pk', 'movie', 'user', 'rate')
+        read_only_fields = ('pk',)

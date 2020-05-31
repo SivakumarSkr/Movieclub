@@ -126,7 +126,7 @@ class User(AbstractUser):
         return self.watched_films.all()
 
     def check_watched(self, movie):
-        return movie in self.watched_films.all()
+        return self.watched_films.all().filter(pk=movie.pk).exists()
 
     def get_following_stars(self):
         return self.following_stars.all()

@@ -20,10 +20,9 @@ class ShareSerializer(ModelSerializer):
             queryset=Review.objects.all(),
             view_name='review-detail',
         ),
-
-    })
+    }, source='sharing_object')
 
     class Meta:
         model = Share
-        fields = ('shared_object',)
-        # read_only_fields = ('time', 'user', 'liked')
+        fields = ('pk', 'time', 'user', 'liked', 'shared_object', 'description', 'set_comments')
+        read_only_fields = ('pk', 'time', 'user', 'liked', 'set_comments')

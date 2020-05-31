@@ -3,6 +3,7 @@ import uuid
 from django.conf import settings
 from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
+from django.db.models import F
 from django.utils.text import slugify
 from taggit.managers import TaggableManager
 
@@ -37,20 +38,27 @@ class Topic(models.Model):
         ordering = ("-time",)
         get_latest_by = 'time'
 
-    def follow_the_topic(self, user):
-        self.followers.add(user)
-        self.save()
+    def follow(self, user):
+        if not self.check_the_follow(user):
+            self.followers.add(user)
+            self.save()
+            return True
+        else:
+            return False
 
     def check_the_follow(self, user):
-        return user in self.followers.all()
+        return self.followers.all().filter(pk=user.pk).exists()
 
-    def un_follow_the_topic(self, user):
+    def un_follow(self, user):
         if self.check_the_follow(user):
             self.followers.remove(user)
             self.save()
+            return True
+        else:
+            return False
 
     def watched(self):
-        self.no_of_watches += 1
+        self.no_of_watches = F('no_of_watches') + 1
         self.save()
 
     def save(self, *args, **kwargs):
