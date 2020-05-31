@@ -1,5 +1,4 @@
 from rest_framework import status
-from rest_framework.authentication import TokenAuthentication
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -12,8 +11,8 @@ from movies.serializers import MovieSerializer, LanguageSerializer, GenreSeriali
 
 class MovieViewSet(ModelViewSet):
     serializer_class = MovieSerializer
-    permission_classes = (IsPrime,)
-    authentication_classes = [TokenAuthentication]
+    permission_classes = (IsAuthenticated, IsPrime)
+    # authentication_classes = [TokenAuthentication]
     queryset = Movie.objects.all()
 
     def perform_create(self, serializer):
@@ -46,7 +45,7 @@ class LanguageViewSet(ModelViewSet):
 
 class GenreViewSet(ModelViewSet):
     serializer_class = GenreSerializer
-    permission_classes = (IsPrime,)
+    permission_classes = (IsAuthenticated, IsPrime)
     # authentication_classes = [TokenAuthentication]
     queryset = Genre.objects.all()
     search_fields = ('name', 'released_year', 'country', 'director__name', 'language__name', 'stars__name')
