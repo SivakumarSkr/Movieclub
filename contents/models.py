@@ -48,9 +48,6 @@ class Content(models.Model):
                               blank=True)
     set_comments = GenericRelation('comments.Comment')
 
-    class Meta:
-        abstract = True
-
     def content_watched(self):
         self.watched += 1
         self.save()
@@ -86,21 +83,23 @@ class Content(models.Model):
         followers = user.get_following()
         return likes.intersection(followers)
 
+    class Meta:
+        abstract = True
+
 
 class Answer(Content):
     topic = models.ForeignKey(Topic, on_delete=models.CASCADE)
     slug = models.SlugField(max_length=200, null=True, blank=True)
 
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.topic)
+        super().save(*args, **kwargs)
+
     class Meta:
         verbose_name = "Answer"
         verbose_name_plural = "Answers"
         ordering = ("-time",)
-
-    def save(self, *args, **kwargs):
-        if not self.slug:
-            self.slug = slugify(self.topic)
-
-        super().save(*args, **kwargs)
 
 
 class Review(Content):
@@ -108,14 +107,14 @@ class Review(Content):
     slug = models.SlugField(max_length=100, null=True, blank=True)
     spoiler_alert = models.BooleanField(default=False)
 
-    class Meta:
-        ordering = ("-time",)
-
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify("{}'s review on {} {}".format(
                 self.user.email, self.movie.name, self.movie.released_year))
         super().save(*args, **kwargs)
+
+    class Meta:
+        ordering = ("-time",)
 
 
 class Blog(Content):
