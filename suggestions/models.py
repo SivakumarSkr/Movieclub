@@ -27,12 +27,12 @@ class Suggestion(models.Model):
         (BAD_SUGGEST, 'Bad choice.')
     )
     uuid_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-
     sender = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
                                related_name='suggest_sender')
     receiver = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT,
                                  related_name='suggest_receiver')
     time = models.DateTimeField(default=timezone.now)
+    message = models.TextField(null=True, blank=True)
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE,
                                      null=True, blank=True)
     object_id = models.CharField(max_length=40, null=True, blank=True)

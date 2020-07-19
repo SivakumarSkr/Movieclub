@@ -86,7 +86,5 @@ class NotificationSerializer(ModelSerializer):
 
     class Meta:
         model = Notification
-        fields = ('creator', 'receiver', 'unread', 'time',
-                  'subject_content_type', 'notification_object',)
-        read_only_fields = ('creator', 'receiver', 'unread', 'time',
-                            'subject_content_type', 'notification_object',)
+        fields = ('creator', 'receiver', 'unread', 'time', 'notification_object',)
+        read_only_fields = ('creator', 'receiver', 'unread', 'time')

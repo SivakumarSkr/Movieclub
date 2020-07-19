@@ -10,4 +10,5 @@ urlpatterns = [
     path('persons/', include('persons.api_urls')),
     path('shares/', include('shares.api_urls')),
     path('comments/', include('comments.api_urls')),
+    path('notifications/', include('notifications.api_urls')),
 ]
