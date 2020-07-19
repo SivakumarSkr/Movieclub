@@ -66,5 +66,5 @@ class SuggestionSerializer(ModelSerializer):
 
     class Meta:
         model = Suggestion
-        fields = ('pk', 'sender', 'receiver', 'time', 'response', 'suggesting_object')
-        read_only_fields = ('pk', 'sender', 'receiver', 'time', 'response')
+        fields = ('pk', 'sender', 'receiver', 'time', 'message', 'response', 'suggesting_object')
+        read_only_fields = ('pk', 'sender', 'time', 'response')
