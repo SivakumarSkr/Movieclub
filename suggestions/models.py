@@ -38,7 +38,7 @@ class Suggestion(models.Model):
     object_id = models.CharField(max_length=40, null=True, blank=True)
     content_object = GenericForeignKey()
     share_object = GenericRelation('shares.Share')
-    response = models.CharField(max_length=1, choices=choices, null=True)
+    response = models.CharField(max_length=1, choices=choices, null=True, blank=True)
     objects = SuggestionQuerySet.as_manager()
     notification = GenericRelation('notifications.Notification')
 
