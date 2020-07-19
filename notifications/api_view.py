@@ -11,7 +11,10 @@ from notifications.serializers import NotificationSerializer
 class NotificationNewViewSet(ModelViewSet):
     serializer_class = NotificationSerializer
     permission_classes = (IsOwner,)
-    queryset = Notification.objects.all(unread=True)
+    queryset = Notification.objects.filter(unread=True)
+
+    def perform_create(self, serializer):
+        serializer.save(creator=self.request.user)
 
     @action(detail=True, methods=['put', 'patch'], url_path='mark_as_read', name='mark_as_read',
             permission_classes=[IsOwner])
