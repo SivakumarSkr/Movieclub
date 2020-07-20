@@ -30,18 +30,6 @@ class CommentViewSet(ModelViewSet):
         comment.dislike_the_comment(request.user)
         return Response(status=status.HTTP_202_ACCEPTED)
 
-    @action(methods=['get'], detail=True, url_path='get-likes', permission_classes=[IsAuthenticatedOrReadOnly])
-    def get_likes(self, request, pk=None):
-        comment = Comment.objects.get(pk=pk)
-        likes = comment.get_no_likes()
-        return Response(data={'likes': likes}, status=status.HTTP_200_OK)
-
-    @action(methods=['get'], detail=True, url_path='get-dislikes', permission_classes=[IsAuthenticatedOrReadOnly])
-    def get_dislikes(self, request, pk=None):
-        comment = Comment.objects.get(pk=pk)
-        dislikes = comment.get_no_dislikes()
-        return Response(data={'dislikes': dislikes}, status=status.HTTP_200_OK)
-
     @action(methods=['get'], detail=True, url_path='get-comments', permission_classes=[IsAuthenticatedOrReadOnly])
     def get_comments(self, request, pk=None):
         comment = Comment.objects.get(pk=pk)

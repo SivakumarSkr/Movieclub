@@ -35,18 +35,6 @@ class AnswerViewSet(ModelViewSet):
         answer.dislike_the_content(request.user)
         return Response(status=status.HTTP_202_ACCEPTED)
 
-    @action(methods=['get'], detail=True, url_path='get-likes', permission_classes=[IsAuthenticatedOrReadOnly])
-    def get_likes(self, request, pk=None):
-        answer = Answer.objects.get(pk=pk)
-        likes = answer.get_likes()
-        return Response(data={'likes': likes}, status=status.HTTP_200_OK)
-
-    @action(methods=['get'], detail=True, url_path='get-dislikes', permission_classes=[IsAuthenticatedOrReadOnly])
-    def get_dislikes(self, request, pk=None):
-        answer = Answer.objects.get(pk=pk)
-        dislikes = answer.get_dislike()
-        return Response(data={'dislikes': dislikes}, status=status.HTTP_200_OK)
-
     @action(methods=['get'], detail=True, url_path='get-comments', permission_classes=[IsAuthenticatedOrReadOnly])
     def get_comments(self, request, pk=None):
         answer = Answer.objects.get(pk=pk)
@@ -82,18 +70,6 @@ class BlogViewSet(ModelViewSet):
         blog = Blog.objects.get(pk=pk)
         blog.dislike_the_content(request.user)
         return Response(data='disliked', status=status.HTTP_202_ACCEPTED)
-
-    @action(methods=['get'], detail=True, url_path='get-likes', permission_classes=[IsAuthenticatedOrReadOnly])
-    def get_likes(self, request, pk=None):
-        blog = Blog.objects.get(pk=pk)
-        likes = blog.get_likes()
-        return Response(data=likes, status=status.HTTP_200_OK)
-
-    @action(methods=['get'], detail=True, url_path='get-dislikes', permission_classes=[IsAuthenticatedOrReadOnly])
-    def get_dislikes(self, request, pk=None):
-        blog = Blog.objects.get(pk=pk)
-        dislikes = blog.get_dislike()
-        return Response(data=dislikes, status=status.HTTP_200_OK)
 
     @action(methods=['get'], detail=True, url_path='get-comments', permission_classes=[IsAuthenticatedOrReadOnly])
     def get_comments(self, request, pk=None):
@@ -131,18 +107,6 @@ class ReviewViewSet(ModelViewSet):
         review.dislike_the_content(request.user)
         return Response(status=status.HTTP_202_ACCEPTED)
 
-    @action(methods=['get'], detail=True, url_path='get-likes', permission_classes=[IsAuthenticatedOrReadOnly])
-    def get_likes(self, request, pk=None):
-        review = Review.objects.get(pk=pk)
-        likes = review.get_likes()
-        return Response(data={'likes': likes}, status=status.HTTP_200_OK)
-
-    @action(methods=['get'], detail=True, url_path='get-dislikes', permission_classes=[IsAuthenticatedOrReadOnly])
-    def get_dislikes(self, request, pk=None):
-        review = Review.objects.get(pk=pk)
-        dislikes = review.get_dislike()
-        return Response(data={'dislikes': dislikes}, status=status.HTTP_200_OK)
-
     @action(methods=['get'], detail=True, url_path='get-comments', permission_classes=[IsAuthenticatedOrReadOnly])
     def get_comments(self, request, pk=None):
         review = Review.objects.get(pk=pk)
@@ -178,18 +142,6 @@ class StatusVewSet(ModelViewSet):
         status_obj = Status.objects.get(pk=pk)
         status_obj.dislike_the_content(request.user)
         return Response(status=status.HTTP_202_ACCEPTED)
-
-    @action(methods=['get'], detail=True, url_path='get-likes', permission_classes=[IsAuthenticatedOrReadOnly])
-    def get_likes(self, request, pk=None):
-        status_obj = Status.objects.get(pk=pk)
-        likes = status_obj.get_likes()
-        return Response(data={'likes': likes}, status=status.HTTP_200_OK)
-
-    @action(methods=['get'], detail=True, url_path='get-dislikes', permission_classes=[IsAuthenticatedOrReadOnly])
-    def get_dislikes(self, request, pk=None):
-        status_obj = Status.objects.get(pk=pk)
-        dislikes = status_obj.get_dislike()
-        return Response(data={'dislikes': dislikes}, status=status.HTTP_200_OK)
 
     @action(methods=['get'], detail=True, url_path='get-comments', permission_classes=[IsAuthenticatedOrReadOnly])
     def get_comments(self, request, pk=None):

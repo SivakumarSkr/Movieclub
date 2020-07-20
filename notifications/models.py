@@ -71,6 +71,7 @@ class Notification(models.Model):
     def __unicode__(self):
         pass
 
+    @property
     def time_since(self):
         return timesince(self.time, timezone.now())
 

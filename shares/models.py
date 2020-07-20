@@ -36,5 +36,5 @@ class Share(models.Model):
         return self.set_comments.all()
 
     @property
-    def number_of_likes(self):
+    def like_count(self):
         return self.liked.count()

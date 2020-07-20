@@ -66,10 +66,12 @@ class Content(models.Model):
             self.disliked.add(user)
             self.save()
 
-    def get_likes(self):
+    @property
+    def like_count(self):
         return self.liked.count()
 
-    def get_dislike(self):
+    @property
+    def dislike_count(self):
         return self.disliked.count()
 
     def get_markdown(self):

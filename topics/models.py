@@ -61,9 +61,11 @@ class Topic(models.Model):
         self.no_of_watches = F('no_of_watches') + 1
         self.save()
 
+    @property
+    def followers_count(self):
+        return self.followers.count()
+
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(f"{self.head}", )
         super().save(*args, **kwargs)
-
-

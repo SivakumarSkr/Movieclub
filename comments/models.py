@@ -44,10 +44,12 @@ class Comment(models.Model):
             self.dislikes.add(user)
             self.save()
 
-    def get_no_likes(self):
+    @property
+    def likes_count(self):
         return self.likes.count()
 
-    def get_no_dislikes(self):
+    @property
+    def dislikes_count(self):
         return self.dislikes.count()
 
     def get_comments(self):

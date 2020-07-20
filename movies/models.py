@@ -60,6 +60,10 @@ class Genre(models.Model):
             self.followers.add(user)
             self.save()
 
+    @property
+    def followers_count(self):
+        return self.followers.count()
+
     def un_follow(self, user):
         if self.check_following(user):
             self.followers.remove(user)
@@ -85,6 +89,10 @@ class Language(models.Model):
         if not self.check_following(user):
             self.followers.add(user)
             self.save()
+
+    @property
+    def followers_count(self):
+        return self.followers.count()
 
     def un_follow(self, user):
         if self.check_following(user):

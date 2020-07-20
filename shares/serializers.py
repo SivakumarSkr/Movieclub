@@ -1,4 +1,4 @@
-from rest_framework.fields import Field
+from rest_framework.fields import Field, ReadOnlyField
 from rest_framework.serializers import ModelSerializer
 
 from contents.models import Blog, Answer, Review
@@ -51,8 +51,9 @@ class SharedObjectField(Field):
 
 class ShareSerializer(ModelSerializer):
     sharing_object = SharedObjectField(required=True, source='sharing_object')
+    like_count = ReadOnlyField(source='like_count')
 
     class Meta:
         model = Share
-        fields = ('pk', 'time', 'user', 'liked', 'sharing_object', 'description')
+        fields = ('pk', 'time', 'user', 'liked', 'sharing_object', 'like_count', 'description')
         read_only_fields = ('pk', 'time', 'user', 'liked')
