@@ -8,7 +8,6 @@ from topics.permissions import TopicPermission
 class SuggestionViewSet(ModelViewSet):
     serializer_class = SuggestionSerializer
     permission_classes = (IsAuthenticated, TopicPermission,)
-
     # authentication_classes = [TokenAuthentication]
 
     def perform_create(self, serializer):

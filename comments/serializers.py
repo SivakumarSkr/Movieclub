@@ -1,5 +1,5 @@
 from rest_framework.fields import Field
-from rest_framework.serializers import ModelSerializer
+from rest_framework.serializers import ModelSerializer, ReadOnlyField
 
 from comments.models import Comment
 from contents.models import Blog, Answer, Review, Status
@@ -70,8 +70,10 @@ class CommentedObjectField(Field):
 class CommentSerializer(ModelSerializer):
     """Model serializer for Comment"""
     commented_object = CommentedObjectField(required=True, source='comment_object')
+    likes_count = ReadOnlyField(source='likes_count')
+    dislike_count = ReadOnlyField(source='dislike_count')
 
     class Meta:
         model = Comment
-        fields = ('pk', 'user', 'time', 'text', 'image', 'commented_object')
-        read_only_fields = ('pk', 'user', 'time')
+        fields = ('pk', 'user', 'time', 'text', 'image', 'commented_object', 'likes_count', 'dislike_count')
+        read_only_fields = ('pk', 'user', 'time', 'likes_count', 'dislike_count')

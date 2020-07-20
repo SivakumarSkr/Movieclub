@@ -59,6 +59,10 @@ class Star(models.Model):
     def check_following(self, user):
         return user in self.followers.all()
 
+    @property
+    def followers_count(self):
+        return self.get_followers().count()
+
     def get_followers(self):
         return self.followers.all()
 
