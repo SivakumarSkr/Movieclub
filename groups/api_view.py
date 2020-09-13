@@ -37,12 +37,6 @@ class GroupVewSet(ModelViewSet):
         group.leave(request.user)
         return Response(status=status.HTTP_200_OK)
 
-    @action(methods=['get'], detail=True, url_path='check-member', permission_classes=[IsMember])
-    def check_member(self, request, pk=None):
-        group = self.get_object()
-        check = group.check_member(request.user)
-        return Response(data={'data': check}, status=status.HTTP_200_OK)
-
     @action(methods=['get'], detail=True, url_path='get-members', permission_classes=[IsMember, IsCreator])
     def get_members(self, request, pk=None):
         group = self.get_object()

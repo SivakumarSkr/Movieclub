@@ -1,5 +1,6 @@
 from rest_framework import status
 from rest_framework.decorators import action
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
@@ -9,11 +10,19 @@ from comments.permissions import CommentPermission
 from comments.serializers import CommentSerializer
 
 
+class CommentPagination(PageNumberPagination):
+    page_size = 30
+    page_size_query_param = 'page-size'
+    max_page_size = 10000
+
+
 class CommentViewSet(ModelViewSet):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
     permission_classes = (CommentPermission, IsAuthenticatedOrReadOnly)
     # authentication_classes = [TokenAuthentication]
+    renderer_classes = []
+    pagination_class = CommentPagination
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
@@ -30,7 +39,8 @@ class CommentViewSet(ModelViewSet):
         comment.dislike(request.user)
         return Response(status=status.HTTP_202_ACCEPTED)
 
-    @action(methods=['get'], detail=True, url_path='get-comments', permission_classes=[IsAuthenticatedOrReadOnly])
+    @action(methods=['get'], detail=True, url_path='get-comments', permission_classes=[IsAuthenticatedOrReadOnly],
+            pagination_class=PageNumberPagination)
     def get_comments(self, request, pk=None):
         comment = self.get_object()
         comments = comment.get_comments()

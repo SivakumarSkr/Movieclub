@@ -24,3 +24,10 @@ class StarSerializer(ModelSerializer):
             setattr(instance, attr, value)
         instance.save()
         return instance
+
+
+class StarMiniSerializer(ModelSerializer):
+    class Meta:
+        model = Star
+        fields = ('pk', 'name')
+        read_only_fields = ('pk', 'name')
