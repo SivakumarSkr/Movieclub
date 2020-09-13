@@ -36,6 +36,7 @@ THIRD_PARTY_APPS = [
     'django_filters',
     'taggit_serializer',
     'generic_relations',
+    'rest_framework_swagger',
 ]
 
 INSTALLED_APPS = LOCAL_APPS + DEFAULT_APPS + THIRD_PARTY_APPS
@@ -84,6 +85,7 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',
     ],
+    'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema'
 
 }
 

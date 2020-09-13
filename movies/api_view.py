@@ -1,5 +1,6 @@
 from rest_framework import status
 from rest_framework.decorators import action
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
@@ -9,11 +10,18 @@ from movies.models import Movie, Language, Genre, Rating
 from movies.serializers import MovieSerializer, LanguageSerializer, GenreSerializer, RatingSerializer
 
 
+class MoviePagination(PageNumberPagination):
+    page_size = 50
+    page_size_query_param = 'page_size'
+    max_page_size = 10000
+
+
 class MovieViewSet(ModelViewSet):
     serializer_class = MovieSerializer
     permission_classes = (IsAuthenticated, IsPrime)
     # authentication_classes = [TokenAuthentication]
     queryset = Movie.objects.all()
+    pagination_class = MoviePagination
 
     def perform_create(self, serializer):
         serializer.save()
