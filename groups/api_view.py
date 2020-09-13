@@ -8,7 +8,7 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from groups.models import Group, GroupBlog, ClosedGroup, JoinRequest
-from groups.permissions import IsOwnerBlog, IsAdmin, IsCreator, IsMember, IsAuthorizer, IsRequestPermission
+from groups.permissions import IsOwner, IsAdmin, IsCreator, IsMember, IsGroupAuthorizer, IsRequestPermission
 from groups.serializers import GroupSerializer, GroupBlogSerializer, JoinRequestSerializer, ClosedGroupSerializer
 from users.serializers import UserSerializer
 
@@ -117,19 +117,28 @@ class ClosedGroupViewSet(GroupVewSet):
         serialize = UserSerializer(users, many=True)
         return Response(data=serialize.data, status=status.HTTP_200_OK)
 
+    @action(methods=['get'], detail=True, url_path='remove-member', permission_classes=[IsGroupAuthorizer])
+    def remove_member(self, request, pk=None):
+        group = self.get_object()
+        is_member = group.remove_member(request.user)
+        if is_member:
+            return Response(status=status.HTTP_202_ACCEPTED)
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
 
 class JoinRequestViewSet(ModelViewSet):
     serializer_class = JoinRequestSerializer
     queryset = JoinRequest.objects.all()
     permission_classes = [IsRequestPermission]
 
-    @action(methods=['patch'], detail=True, permission_classes=[IsAuthorizer])
+    @action(methods=['patch'], detail=True, permission_classes=[IsGroupAuthorizer])
     def approve(self, request, pk=None):
         request_obj = self.get_object()
         request_obj.approve(request.user)
         return Response(status=status.HTTP_202_ACCEPTED)
 
-    @action(methods=['patch'], detail=True, permission_classes=[IsRequestPermission])
+    @action(methods=['patch'], detail=True, permission_classes=[IsOwner | IsGroupAuthorizer])
     def cancel(self, request):
         request_obj = self.get_object()
         request_obj.cancel(request.user)
@@ -139,9 +148,15 @@ class JoinRequestViewSet(ModelViewSet):
 class GroupBlogViewSet(ModelViewSet):
     serializer_class = GroupBlogSerializer
     queryset = GroupBlog.objects.all()
-    permission_classes = (IsOwnerBlog,)
+    permission_classes = (IsOwner,)
     authentication_classes = [TokenAuthentication]
     filter_backends = (SearchFilter,)
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+
+    @action(methods=['patch', 'update'], detail=True, url_path="approve", permission_classes=[IsGroupAuthorizer])
+    def approve(self, request, pk=None):
+        blog = self.get_object()
+        blog.approve()
+        return Response(status=status.HTTP_200_OK)

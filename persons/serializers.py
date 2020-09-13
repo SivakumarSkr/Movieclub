@@ -10,8 +10,8 @@ class StarSerializer(ModelSerializer):
     class Meta:
         model = Star
         fields = (
-        'pk', 'name', 'date_of_birth', 'country', 'photo', 'biography', 'followers', 'followers_count', 'created_by',
-        'updated_by')
+            'pk', 'name', 'date_of_birth', 'country', 'photo', 'biography', 'followers', 'followers_count',
+            'created_by', 'updated_by')
         read_only_fields = ('pk', 'followers', 'created_by', 'updated_by')
 
     def update(self, instance, validated_data):

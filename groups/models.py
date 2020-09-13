@@ -1,10 +1,9 @@
 import uuid
 
+from contents.models import Content
 from django.conf import settings
 from django.db import models
 from django.utils.timezone import now
-
-from contents.models import Content
 
 
 # Create your models here.
@@ -96,6 +95,13 @@ class ClosedGroup(Group):
             self.admins.remove(user)
             self.save()
 
+    def remove_member(self, user):
+        if self.check_member(user):
+            self.members.remove(user)
+            self.save()
+        else:
+            return False
+
     def get_admins(self):
         return self.admins.all()
 
@@ -111,10 +117,14 @@ class ClosedGroup(Group):
 class GroupBlog(Content):
     heading = models.CharField(max_length=300)
     group = models.ForeignKey(Group, on_delete=models.CASCADE, related_name='blogs')
-    published = models.BooleanField(default=False)
+    is_approved = models.BooleanField(default=False)
 
     def __str__(self):
         return self.heading
+
+    def approve(self):
+        self.is_approved = True
+        self.save()
 
 
 class ClosedGroupBlog(GroupBlog):

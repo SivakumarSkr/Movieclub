@@ -52,14 +52,14 @@ class Content(models.Model):
         self.watched += 1
         self.save()
 
-    def like_the_content(self, user):
+    def like(self, user):
         try:
             self.disliked.remove(user)
         finally:
             self.liked.add(user)
             self.save()
 
-    def dislike_the_content(self, user):
+    def dislike(self, user):
         try:
             self.liked.remove(user)
         finally:
