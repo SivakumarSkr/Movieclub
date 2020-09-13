@@ -20,19 +20,19 @@ class CommentViewSet(ModelViewSet):
 
     @action(methods=["patch"], detail=True, url_path='like', permission_classes=[IsAuthenticatedOrReadOnly])
     def like(self, request, pk=None):
-        comment = Comment.objects.get(pk=pk)
-        comment.like_the_comment(request.user)
+        comment = self.get_object()
+        comment.like(request.user)
         return Response(status=status.HTTP_202_ACCEPTED)
 
     @action(methods=['patch'], detail=True, url_path='dislike', permission_classes=[IsAuthenticatedOrReadOnly])
-    def dislike_the_comment(self, request, pk=None):
-        comment = Comment.objects.get(pk=pk)
-        comment.dislike_the_comment(request.user)
+    def dislike(self, request, pk=None):
+        comment = self.get_object()
+        comment.dislike(request.user)
         return Response(status=status.HTTP_202_ACCEPTED)
 
     @action(methods=['get'], detail=True, url_path='get-comments', permission_classes=[IsAuthenticatedOrReadOnly])
     def get_comments(self, request, pk=None):
-        comment = Comment.objects.get(pk=pk)
+        comment = self.get_object()
         comments = comment.get_comments()
         serialize = CommentSerializer(comments, many=True)
         return Response(data=serialize.data, status=status.HTTP_200_OK)

@@ -30,14 +30,14 @@ class Comment(models.Model):
     set_comments = GenericRelation('self')
     objects = CommentQuerySet.as_manager()
 
-    def like_the_comment(self, user):
+    def like(self, user):
         try:
             self.dislikes.remove(user)
         finally:
             self.likes.add(user)
             self.save()
 
-    def dislike_the_comment(self, user):
+    def dislike(self, user):
         try:
             self.likes.remove(user)
         finally:
@@ -53,11 +53,7 @@ class Comment(models.Model):
         return self.dislikes.count()
 
     def get_comments(self):
-        return self.set_comments
-
-    def set_edited(self):
-        self.edited = True
-        self.save()
+        return self.set_comments.all()
 
     class Meta:
         ordering = ('-time',)

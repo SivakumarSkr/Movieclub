@@ -9,8 +9,8 @@ class GenreSerializer(ModelSerializer):
 
     class Meta:
         model = Genre
-        fields = ('pk', 'name', 'thumbnail', 'followers_count')
-        read_only_fields = ('pk', 'followers',)
+        fields = ('uuid_id', 'name', 'thumbnail', 'followers_count')
+        read_only_fields = ('uuid_id', 'followers',)
 
 
 class LanguageSerializer(ModelSerializer):
@@ -18,8 +18,8 @@ class LanguageSerializer(ModelSerializer):
 
     class Meta:
         model = Language
-        fields = ('pk', 'name', 'thumbnail', 'followers_count')
-        read_only_fields = ('pk', 'followers')
+        fields = ('uuid_id', 'name', 'thumbnail', 'followers_count')
+        read_only_fields = ('uuid_id', 'followers')
 
 
 class MovieSerializer(ModelSerializer):
@@ -27,14 +27,14 @@ class MovieSerializer(ModelSerializer):
 
     class Meta:
         model = Movie
-        fields = ('pk', 'name', 'released_year', 'language', 'genre', 'country',
+        fields = ('uuid_id', 'name', 'released_year', 'language', 'genre', 'country',
                   'director', 'writers', 'stars', 'thumbnail', 'rating_count')
-        read_only_fields = ('pk', 'rating',)
+        read_only_fields = ('uuid_id', 'rating',)
 
 
 class RatingSerializer(ModelSerializer):
 
     class Meta:
         model = Rating
-        fields = ('pk', 'movie', 'user', 'rate')
-        read_only_fields = ('pk',)
+        fields = ('uuid_id', 'movie', 'user', 'rate')
+        read_only_fields = ('uuid_id',)

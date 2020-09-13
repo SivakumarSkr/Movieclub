@@ -70,7 +70,7 @@ class Genre(models.Model):
             self.save()
 
     def check_following(self, user):
-        return user in self.followers.all()
+        return self.followers.filter(pk=user.pk).values_list('pk', flat=True)
 
 
 class Language(models.Model):
@@ -108,14 +108,13 @@ class Movie(models.Model):
                                          MaxValueValidator(datetime.date.today().year)], null=True)
     language = models.ForeignKey(Language, on_delete=models.PROTECT,
                                  related_name='movies_language', null=True)
-    genre = models.ManyToManyField(Genre, related_name='movies_genre')
+    genre = models.ManyToManyField(Genre, related_name='movies_genres')
     country = models.CharField(max_length=40, null=True)
-    director = models.ForeignKey(Star, on_delete=models.PROTECT,
-                                 related_name='movies_director', null=True)
+    director = models.ManyToManyField(Star, related_name='movies_director')
     rating = models.PositiveIntegerField(default=0, validators=[MaxValueValidator(10),
                                                                 MinValueValidator(0)])
-    writers = models.ManyToManyField(Star, related_name='movies_writer')
-    stars = models.ManyToManyField(Star, related_name='movies_star')
+    writers = models.ManyToManyField(Star, related_name='movies_writers')
+    stars = models.ManyToManyField(Star, related_name='movies_stars')
     thumbnail = models.ImageField(upload_to=upload_to_movies, null=True)
     suggestions = GenericRelation(Suggestion, related_query_name='movie_suggestion', null=True)
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, on_delete=models.PROTECT,
