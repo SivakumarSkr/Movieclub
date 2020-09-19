@@ -84,18 +84,17 @@ class ClosedGroupViewSet(GroupVewSet):
     @action(methods=['patch'], detail=True, url_path='remove-admin', permission_classes=[IsCreator])
     def remove_admin(self, request, pk=None):
         data = {}
-        status_code = status.HTTP_200_OK
+        status_code = status.HTTP_400_BAD_REQUEST
         try:
             user = User.objects.get(pk=request.GET.get('user', None))
             group = self.get_object()
         except ClosedGroup.DoesNotExist as e:
             data = {'detail': "This action is not applicable for open groups."}
-            status_code = status.HTTP_400_BAD_REQUEST
         except User.DoesNotExist as e:
             data = {'detail': "Please provide valid user."}
-            status_code = status.HTTP_400_BAD_REQUEST
         else:
             group.remove_admin(user)
+            status_code = status.HTTP_200_OK
         return Response(data=data, status=status_code)
 
     @action(methods=['patch'], detail=True, url_path='join', permission_classes=[IsAuthenticated])
