@@ -19,9 +19,8 @@ class CommentPagination(PageNumberPagination):
 class CommentViewSet(ModelViewSet):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
-    permission_classes = (CommentPermission, IsAuthenticatedOrReadOnly)
+    permission_classes = (CommentPermission,)
     # authentication_classes = [TokenAuthentication]
-    renderer_classes = []
     pagination_class = CommentPagination
 
     def perform_create(self, serializer):
