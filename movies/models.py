@@ -110,7 +110,7 @@ class Movie(models.Model):
                                  related_name='movies_language', null=True)
     genre = models.ManyToManyField(Genre, related_name='movies_genres')
     country = models.CharField(max_length=40, null=True)
-    directors = models.ManyToManyField(Star, related_name='movies_director')
+    directors = models.ManyToManyField(Star, related_name='movies_directors')
     rating = models.PositiveIntegerField(default=0, validators=[MaxValueValidator(10),
                                                                 MinValueValidator(0)])
     writers = models.ManyToManyField(Star, related_name='movies_writers')

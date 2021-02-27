@@ -48,7 +48,7 @@ class ContentViewSet(ModelViewSet):
         content.dislike(request.user)
         return Response(status=status.HTTP_202_ACCEPTED)
 
-    @action(methods=['get'], detail=True, url_path='get-comments', permission_classes=[IsAuthenticatedOrReadOnly],
+    @action(methods=['get'], detail=True, url_path='get_comments', permission_classes=[IsAuthenticatedOrReadOnly],
             pagination_class=CommentPagination)
     def get_comments(self, request, pk=None):
         content = self.get_object()
@@ -56,13 +56,31 @@ class ContentViewSet(ModelViewSet):
         serialize = CommentSerializer(comments, many=True, context={'request': request})
         return Response(data=serialize.data, status=status.HTTP_200_OK)
 
-    @action(methods=['get'], detail=True, url_path='common-likes', permission_classes=[IsAuthenticatedOrReadOnly],
+    @action(methods=['get'], detail=True, url_path='common_likes', permission_classes=[IsAuthenticatedOrReadOnly],
             pagination_class=CommonLikesPaginator)
     def get_common_liked_user(self, request, pk=None):
         content = self.get_object()
         common_likes = content.get_common_likes(request.user)
         serialize = UserSerializer(common_likes, many=True)
         return Response(data=serialize.data, status=status.HTTP_200_OK)
+
+    @action(methods=['put', 'patch'], detail=True, url_path='save_draft', permission_classes=[IsOwner])
+    def save_draft(self, request, pk=None):
+        content = self.get_object()
+        serializer = self.serializer_class(content, data=request.data)
+        if serializer.is_valid() and content.status != 'P':
+            serializer.save(status='D', user=request.user)
+            return Response(status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(methods=['put', 'patch'], detail=True, url_path='publish', permission_classes=[IsOwner])
+    def publish(self, request, pk=None):
+        content = self.get_object()
+        serializer = self.serializer_class(content, data=request.data)
+        if serializer.is_valid():
+            serializer.save(status='P', user=request.user)
+            return Response(status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class AnswerViewSet(ModelViewSet):

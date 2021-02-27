@@ -78,6 +78,12 @@ class User(AbstractUser):
         self.followers.add(user)
         self.save()
 
+    def activate_prime(self):
+        if not self.is_prime:
+            self.is_prime = True
+            return True
+        return False
+
     def un_follow(self, user):
         self.followers.remove(user)
         self.save()

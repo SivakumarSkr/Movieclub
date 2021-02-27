@@ -1,18 +1,21 @@
-from rest_framework.fields import ReadOnlyField
 from rest_framework.serializers import ModelSerializer
 
 from persons.models import Star
 
 
 class StarSerializer(ModelSerializer):
-    followers_count = ReadOnlyField(source='followers_count')
+    # followers_count = ReadOnlyField()
 
     class Meta:
         model = Star
         fields = (
             'pk', 'name', 'date_of_birth', 'country', 'photo', 'biography', 'followers', 'followers_count',
-            'created_by', 'updated_by')
-        read_only_fields = ('pk', 'followers', 'created_by', 'updated_by')
+            'created_by', 'updated_by', 'number_of_films_as_director', 'number_of_films_as_actor',
+            'number_of_films_as_writer'
+        )
+        read_only_fields = ('pk', 'followers', 'created_by', 'updated_by', 'number_of_films_as_director',
+                            'number_of_films_as_actor', 'number_of_films_as_writer'
+                            )
 
     def update(self, instance, validated_data):
         user = None
@@ -30,4 +33,4 @@ class StarMiniSerializer(ModelSerializer):
     class Meta:
         model = Star
         fields = ('pk', 'name')
-        read_only_fields = ('pk', 'name')
+        read_only_fields = ('name',)

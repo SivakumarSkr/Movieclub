@@ -129,6 +129,12 @@ class UserViewSet(ModelViewSet):
         check = request.user.check_watched(movie)
         return Response(data=check, status=status.HTTP_100_CONTINUE)
 
+    @action(methods=['patch'], detail=True)
+    def activate_prime(self, request, pk=None):
+        user = self.get_object()
+        status_code = status.HTTP_202_ACCEPTED if user.activate_prime() else status.HTTP_400_BAD_REQUEST
+        return Response(status=status_code)
+
 
 class UserLogin(ObtainAuthToken):
     renderer_classes = api_settings.DEFAULT_RENDERER_CLASSES

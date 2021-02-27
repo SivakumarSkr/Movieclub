@@ -69,3 +69,8 @@ class Topic(models.Model):
         if not self.slug:
             self.slug = slugify(f"{self.head}", )
         super().save(*args, **kwargs)
+
+    @property
+    def answer_count(self):
+        answer_count = self.answer_set.count()
+        return answer_count
