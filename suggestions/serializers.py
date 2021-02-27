@@ -1,5 +1,5 @@
+from rest_framework import serializers
 from rest_framework.fields import Field
-from rest_framework.serializers import ModelSerializer
 
 from contents.models import Answer, Blog, Review
 from contents.serializers import BlogSerializer, AnswerSerializer, ReviewSerializer
@@ -61,10 +61,16 @@ class SuggestionObjectField(Field):
             return shared_object
 
 
-class SuggestionSerializer(ModelSerializer):
+class SuggestionSerializer(serializers.ModelSerializer):
     suggesting_object = SuggestionObjectField(required=True, source='content_object')
 
     class Meta:
         model = Suggestion
         fields = ('pk', 'sender', 'receiver', 'time', 'message', 'response', 'suggesting_object')
         read_only_fields = ('pk', 'sender', 'time', 'response')
+
+
+class SuggestionRespond(serializers.ModelSerializer):
+    class Meta:
+        model = Suggestion
+        fields = ('response',)

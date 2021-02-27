@@ -17,7 +17,7 @@ class Share(models.Model):
     liked = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='shares_liked')
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.CharField(max_length=40, null=True, blank=True)
-    sharing_object = GenericForeignKey('content_type', 'object_id')
+    sharing_object = GenericForeignKey()
     set_comments = GenericRelation('comments.Comment')
 
     def like(self, user):

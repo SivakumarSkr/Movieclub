@@ -41,7 +41,15 @@ class Suggestion(models.Model):
     response = models.CharField(max_length=1, choices=choices, null=True, blank=True)
     objects = SuggestionQuerySet.as_manager()
     notification = GenericRelation('notifications.Notification')
+    accepted = models.BooleanField(default=False)
 
     def respond(self, response):
         self.response = response
         self.save()
+
+    def accept(self):
+        if not self.accepted:
+            self.accepted = True
+            self.save()
+            return True
+        return False

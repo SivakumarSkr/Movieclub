@@ -7,6 +7,7 @@ from django.db import models
 
 # Create your models here.
 
+
 class SocialMedia(models.Model):
     uuid_id = models.UUIDField(default=uuid.uuid4, primary_key=True)
     facebook = models.URLField(null=True)
@@ -39,6 +40,27 @@ class Star(models.Model):
         current = datetime.datetime.now().year
         dob = self.date_of_birth.year
         return current - dob
+
+    @property
+    def number_of_films_as_actor(self):
+        return self.movies_stars.count()
+
+    @property
+    def number_of_films_as_writer(self):
+        return self.movies_writers.count()
+
+    @property
+    def number_of_films_as_director(self):
+        return self.movies_directors.count()
+
+    def get_movies_as_writer(self):
+        return self.movies_writers.all()
+
+    def get_movies_as_actor(self):
+        return self.movies_stars.all()
+
+    def get_movies_as_director(self):
+        return self.movies_directors.all()
 
     def follow(self, user):
         if not self.check_following(user):

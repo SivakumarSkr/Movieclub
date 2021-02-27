@@ -17,7 +17,7 @@ class AnswerSerializer(ModelSerializer):
     class Meta:
         model = Answer
         fields = ('pk', 'topic', 'contents', 'status', 'like_count', 'dislike_count', 'image')
-        readonly_fields = ('pk', 'user', 'like_count', 'like_count', 'status')
+        read_only_fields = ('pk', 'user', 'like_count', 'like_count', 'status')
 
 
 class ReviewSerializer(ModelSerializer):
@@ -25,7 +25,7 @@ class ReviewSerializer(ModelSerializer):
     class Meta:
         model = Review
         fields = ('pk', 'contents', 'image', 'status', 'spoiler_alert', 'like_count', 'dislike_count', 'movie')
-        readonly_fields = ('pk', 'user', 'like_count', 'like_count')
+        read_only_fields = ('pk', 'user', 'like_count', 'like_count')
 
 
 class StatusSerializer(ModelSerializer):

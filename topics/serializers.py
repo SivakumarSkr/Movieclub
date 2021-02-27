@@ -5,9 +5,9 @@ from topics.models import Topic
 
 
 class TopicSerializer(ModelSerializer):
-    followers_count = ReadOnlyField(source='followers_count')
+    followers_count = ReadOnlyField()
 
     class Meta:
         model = Topic
-        fields = ('head', 'time', 'description', 'created_by', 'no_of_watches', 'followers_count')
-        read_only_fields = ('time', 'created_by', 'no_of_watches')
+        fields = ('pk', 'head', 'time', 'description', 'answer_count', 'created_by', 'no_of_watches', 'followers_count')
+        read_only_fields = ('pk', 'time', 'created_by', 'answer_count', 'no_of_watches')
