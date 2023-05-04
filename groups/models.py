@@ -115,20 +115,12 @@ class ClosedGroup(Group):
     class Meta:
         proxy = True
 
-    def is_admin(self, user):
-        admins = self.get_admins()
-        if admins.filter(pk=user.pk).exists() or user == self.creator:
-            return True
-
-    class Meta:
-        proxy = True
-
 
 class GroupBlog(Content):
     heading = models.CharField(max_length=300)
     group = models.ForeignKey(
         Group, on_delete=models.CASCADE, related_name='blogs')
-    published = models.BooleanField(default=False)
+    is_approved = models.BooleanField(default=False)
 
     def __str__(self):
         return self.heading
