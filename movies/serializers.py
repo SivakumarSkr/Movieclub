@@ -1,32 +1,50 @@
+from rest_framework.fields import ReadOnlyField
 from rest_framework.serializers import ModelSerializer
 
 from movies.models import Genre, Language, Movie, Rating
 
 
 class GenreSerializer(ModelSerializer):
+    followers_count = ReadOnlyField()
 
     class Meta:
         model = Genre
-        fields = ('name', 'thumbnail')
+        fields = ('pk', 'name', 'thumbnail', 'followers_count')
+        read_only_fields = ('pk', 'followers',)
 
 
-class LanguageSerializer():
+class LanguageSerializer(ModelSerializer):
+    followers_count = ReadOnlyField()
 
     class Meta:
         model = Language
-        fields = ('name', 'thumbnail')
+        fields = ('pk', 'name', 'thumbnail', 'followers_count')
+        read_only_fields = ('pk', 'followers')
 
 
 class MovieSerializer(ModelSerializer):
+    rating_count = ReadOnlyField(source='number_of_rates')
+
+    # writers = StarMiniSerializer(read_only=True, many=True)
+    # directors = StarMiniSerializer(read_only=True, many=True)
+    # stars = StarMiniSerializer(read_only=True, many=True)
 
     class Meta:
         model = Movie
-        fields = ('name', 'released_year', 'language', 'genre', 'country',
-                  'director', 'rating', 'writers', 'stars', 'thumbnail',)
+        fields = ('pk', 'name', 'released_year', 'rating', 'language', 'genre', 'country',
+                  'directors', 'writers', 'stars', 'thumbnail', 'rating_count')
+        read_only_fields = ('pk', 'rating',)
+
+
+class MovieMiniSerializer(MovieSerializer):
+    class Meta:
+        model = Movie
+        fields = ('pk', 'name')
+        read_only_fields = ('pk', 'name')
 
 
 class RatingSerializer(ModelSerializer):
-
     class Meta:
         model = Rating
-        fields = ('movie', 'user', 'rate')
+        fields = ('pk', 'movie', 'user', 'rate')
+        read_only_fields = ('pk', 'user')

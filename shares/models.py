@@ -1,10 +1,10 @@
 import uuid
 
+from django.conf import settings
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.utils.timezone import now
-from django.conf import settings
 
 
 # Create your models here.
@@ -15,15 +15,26 @@ class Share(models.Model):
                              related_name='shares')
     description = models.TextField(null=True, blank=True)
     liked = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='shares_liked')
-    share_content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
-    share_content_object_id = models.CharField(max_length=40, null=True, blank=True)
-    sharing_object = GenericForeignKey("share_content_type",
-                                       "share_content_object_id")
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.CharField(max_length=40, null=True, blank=True)
+    sharing_object = GenericForeignKey()
     set_comments = GenericRelation('comments.Comment')
 
-    def like_the_share(self, user):
+    def like(self, user):
         self.liked.add(user)
         self.save()
 
+    def check_like(self, user):
+        return user in self.liked.all()
+
+    def unlike(self, user):
+        if self.check_like(user):
+            self.liked.remove(user)
+            self.save()
+
     def get_comments(self):
         return self.set_comments.all()
+
+    @property
+    def like_count(self):
+        return self.liked.count()

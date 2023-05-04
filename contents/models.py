@@ -2,15 +2,15 @@ import uuid
 
 from django.conf import settings
 from django.contrib.contenttypes.fields import GenericRelation
-from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.utils.text import slugify
 from django.utils.timezone import now
-from topics.models import Topic
-from movies.models import Movie
-from taggit.managers import TaggableManager
 from markdownx.models import MarkdownxField
 from markdownx.utils import markdownify
+from taggit.managers import TaggableManager
+
+from movies.models import Movie
+from topics.models import Topic
 
 
 # Create your models here.
@@ -48,51 +48,60 @@ class Content(models.Model):
                               blank=True)
     set_comments = GenericRelation('comments.Comment')
 
-    class Meta:
-        abstract = True
-
     def content_watched(self):
         self.watched += 1
         self.save()
 
-    def like_the_content(self, user):
+    def like(self, user):
         try:
             self.disliked.remove(user)
         finally:
             self.liked.add(user)
             self.save()
 
-    def dislike_the_content(self, user):
+    def dislike(self, user):
         try:
             self.liked.remove(user)
         finally:
             self.disliked.add(user)
             self.save()
 
-    def get_likes(self):
+    @property
+    def like_count(self):
         return self.liked.count()
 
-    def get_dislike(self):
+    @property
+    def dislike_count(self):
         return self.disliked.count()
 
     def get_markdown(self):
         return markdownify(self.contents)
+
+    def get_comments(self):
+        return self.set_comments.order_by('-time')
+
+    def get_common_likes(self, user):
+        likes = self.liked.all()
+        followers = user.get_following()
+        return likes.intersection(followers)
+
+    class Meta:
+        abstract = True
 
 
 class Answer(Content):
     topic = models.ForeignKey(Topic, on_delete=models.CASCADE)
     slug = models.SlugField(max_length=200, null=True, blank=True)
 
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.topic)
+        super().save(*args, **kwargs)
+
     class Meta:
         verbose_name = "Answer"
         verbose_name_plural = "Answers"
         ordering = ("-time",)
-
-    def save(self, *args, **kwargs):
-        if not self.slug:
-            self.slug = slugify(self.topic)
-
-        super().save(*args, **kwargs)
 
 
 class Review(Content):
@@ -100,14 +109,14 @@ class Review(Content):
     slug = models.SlugField(max_length=100, null=True, blank=True)
     spoiler_alert = models.BooleanField(default=False)
 
-    class Meta:
-        ordering = ("-time",)
-
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify("{}'s review on {} {}".format(
                 self.user.email, self.movie.name, self.movie.released_year))
         super().save(*args, **kwargs)
+
+    class Meta:
+        ordering = ("-time",)
 
 
 class Blog(Content):
@@ -135,3 +144,35 @@ class Status(models.Model):
     action = models.CharField(max_length=1, choices=ACTION)
     image = models.ImageField(upload_to='status_images/%Y/%m/%d/', null=True)
     set_comments = GenericRelation('comments.Comment')
+    liked = models.ManyToManyField(settings.AUTH_USER_MODEL,
+                                   related_name="%(class)s_liked", blank=True)
+    disliked = models.ManyToManyField(settings.AUTH_USER_MODEL,
+                                      related_name="%(class)s_disliked", blank=True)
+
+    def like_the_content(self, user):
+        try:
+            self.disliked.remove(user)
+        finally:
+            self.liked.add(user)
+            self.save()
+
+    def dislike_the_content(self, user):
+        try:
+            self.liked.remove(user)
+        finally:
+            self.disliked.add(user)
+            self.save()
+
+    def get_likes(self):
+        return self.liked.count()
+
+    def get_dislike(self):
+        return self.disliked.count()
+
+    def get_comments(self):
+        return self.set_comments.order_by('-time')
+
+    def get_common_likes(self, user):
+        likes = self.liked.all()
+        followers = user.get_following()
+        return likes.intersection(followers)

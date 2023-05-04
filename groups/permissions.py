@@ -32,14 +32,14 @@ class IsMember(BasePermission):
         return obj.check_member(request.user)
 
 
-class IsOwnerBlog(BasePermission):
+class IsOwner(BasePermission):
     def has_object_permission(self, request, view, obj):
         if request.method in SAFE_METHODS:
             return True
         return obj.user == request.user
 
 
-class IsAuthorizer(BasePermission):
+class IsGroupAuthorizer(BasePermission):
     """For restricting join request authorizing.
     """
 

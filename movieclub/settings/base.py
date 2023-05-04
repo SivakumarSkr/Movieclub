@@ -1,15 +1,21 @@
 import os
 
+import environ
+
+env = environ.Env()
+# reading .env file
+environ.Env.read_env()
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-SECRET_KEY = 'gw8-*06vs1mei4=m-2_4m$5prx6=+l$&p5&rgo6mu$s02x8in@'
+SECRET_KEY = env("SECRET_KEY")
 
 LOCAL_APPS = [
     'comments',
     'contents',
     'groups',
-    # 'messaging',
+    'messaging',
     'notifications',
     'persons',
     'topics',
@@ -33,8 +39,11 @@ THIRD_PARTY_APPS = [
     'markdownx',
     'rest_framework',
     'rest_framework.authtoken',
-
-
+    'django_filters',
+    'taggit_serializer',
+    'generic_relations',
+    'rest_framework_swagger',
+    'corsheaders',
 ]
 
 INSTALLED_APPS = LOCAL_APPS + DEFAULT_APPS + THIRD_PARTY_APPS
@@ -42,6 +51,7 @@ INSTALLED_APPS = LOCAL_APPS + DEFAULT_APPS + THIRD_PARTY_APPS
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -77,3 +87,31 @@ USE_L10N = True
 
 USE_TZ = True
 
+REST_FRAMEWORK = {
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        # 'rest_framework.authentication.BasicAuthentication',
+    ],
+    "DEFAULT_PARSER_CLASSES": ["rest_framework.parsers.JSONParser", ],
+    'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema',
+    'DEFAULT_PERMISSION_CLASSES':
+        ('rest_framework.permissions.IsAuthenticatedOrReadOnly',),
+
+}
+
+SWAGGER_SETTINGS = {
+    'USE_SESSION_AUTH': False,
+    # 'SECURITY_DEFINITIONS': {
+    #     'api_key': {
+    #         'type': 'apiKey',
+    #         'in': 'header',
+    #         'name': 'Authorization'
+    #     }
+    # }
+
+}
+SIMPLE_JWT = {
+    'USER_ID_FIELD': 'pk'
+}
