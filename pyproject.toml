@@ -19,7 +19,7 @@ django-phonenumber-field = "==3.0.1"
 django-phonenumbers = "==1.0.1"
 django-taggit = "==1.1.0"
 djangorestframework = "==3.10.2"
-importlib-metadata = "==0.19"
+importlib-metadata = "4.12"
 more-itertools = "==7.2.0"
 phonenumbers = "==8.10.16"
 pluggy = "==0.12.0"
@@ -61,6 +61,7 @@ PyJWT = "==1.7.1"
 django-taggit-serializer = "^0.1.7"
 psycopg2-binary = "^2.9.6"
 pydotplus = "^2.0.2"
+jsonschema = "3.0.2"
 
 
 [tool.poetry.group.dev.dependencies]
