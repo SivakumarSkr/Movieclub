@@ -30,9 +30,11 @@ class Content(models.Model):
         (DRAFT, 'Draft'),
         (PUBLISHED, 'Published')
     )
-    uuid_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    uuid_id = models.UUIDField(
+        primary_key=True, default=uuid.uuid4, editable=False)
     time = models.DateTimeField(default=now, editable=False)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,
+                             on_delete=models.CASCADE)
     watched = models.PositiveIntegerField(default=0)
     status = models.CharField(max_length=1, choices=STATUS, default='D')
     tags = TaggableManager(blank=True)
@@ -137,10 +139,12 @@ class Status(models.Model):
         (FEELING, 'Feeling'),
 
     )
-    uuid_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    uuid_id = models.UUIDField(
+        primary_key=True, default=uuid.uuid4, editable=False)
     time = models.DateTimeField(default=now, editable=False)
     content = models.TextField(blank=True, null=True)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,
+                             on_delete=models.CASCADE)
     action = models.CharField(max_length=1, choices=ACTION)
     image = models.ImageField(upload_to='status_images/%Y/%m/%d/', null=True)
     set_comments = GenericRelation('comments.Comment')
@@ -163,10 +167,12 @@ class Status(models.Model):
             self.disliked.add(user)
             self.save()
 
-    def get_likes(self):
+    @property
+    def like_count(self):
         return self.liked.count()
 
-    def get_dislike(self):
+    @property
+    def dislike_count(self):
         return self.disliked.count()
 
     def get_comments(self):
